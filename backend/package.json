@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "connect-history-api-fallback": "^2.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6"
+  }
+}

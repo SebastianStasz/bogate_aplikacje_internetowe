@@ -3,6 +3,7 @@ import express, { static as staticEx } from "express";
 import cors from "cors";
 import path from "path";
 import history from "connect-history-api-fallback";
+import { db } from "./database.mjs";
 
 const HOST = "localhost";
 const PORT = 5000;
@@ -14,7 +15,14 @@ const __dirname = path.resolve();
 app.use(cors());
 
 app.get("/api/getData", (req, res) => {
-  res.status(200).json("It works");
+  const sql = `select * from recipe`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.status(200).json(rows);
+  });
 });
 
 // This needs to be after all /api/ routes

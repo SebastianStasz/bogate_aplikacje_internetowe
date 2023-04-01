@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
     import { reactive } from 'vue'
     const formValues = reactive({ login: 'JanNowak', password: 'a123456' })
 

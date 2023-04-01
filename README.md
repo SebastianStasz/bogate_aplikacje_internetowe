@@ -14,6 +14,5 @@ https://www.figma.com/file/cWM2irorDk2TOTUqXY0Rry/Bogate-aplikacje-internetowe?n
 
 - Vue
 - Vuetify
-- Typescript
 - Express.js
 - SQLite3

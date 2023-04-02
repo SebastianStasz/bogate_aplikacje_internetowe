@@ -14,32 +14,21 @@ const __dirname = path.resolve();
 // WARNING: order of those app. actually matters
 
 app.use(cors());
+app.use(express.json());
 
 const authenticateToken = (req, res, next) => {
   const token = req.header("auth-token");
-  const userName = req.header("auth-userName");
-  const sql = `select id from user WHERE userName = '${userName}'`;
-
   if (token) {
     jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
-      if (err) return res.sendStatus(403);
-
-      db.get(sql, [], (err, row) => {
-        if (err) {
-          res.status(400).json({ error: err.message });
-          return;
-        }
-        if (row.id === user.userId) {
-          req.user = user;
-          next();
-        } else res.sendStatus(403);
-      });
+      if (err) return res.sendStatus(401);
+      req.user = user;
+      next();
     });
   } else res.sendStatus(401);
 };
 
 app.get("/api/getData", (req, res) => {
-  const sql = `select * from recipe`;
+  const sql = `select * from user`;
   db.all(sql, [], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -58,6 +47,44 @@ app.post("/api/login", (req, res) => {
       return;
     }
     res.status(200).json({ auth: { token: token, userName: "Przemek" } });
+  });
+});
+
+app.post("/api/signUp", (req, res) => {
+  const newData = req.body;
+  const email = "emailexamp";
+  var sql = `SELECT id from user WHERE userName = '${newData.login}' OR email = '${email}'`;
+  db.get(sql, [], (err, row) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    if (row) {
+      return res.status(400).json({ error: "Użytkownik już istnieje" });
+    } else {
+      sql = `INSERT INTO user (email, password, userName, createdAt) VALUES (?,?,?,?) RETURNING *;`;
+      db.run(
+        sql,
+        [email, newData.password, newData.login, "jakas data"],
+        function (err) {
+          if (err) {
+            return res.status(400).json({ error: err.message });
+          }
+          sql = `SELECT userName from user WHERE id = ${this.lastID}`;
+          db.get(sql, [], (err, row) => {
+            if (err) {
+              return res.status(400).json({ error: err.message });
+            }
+            const token = jwt.sign(
+              { userId: this.lastID },
+              process.env.SECRET_KEY
+            );
+            res
+              .status(200)
+              .json({ auth: { token: token, userName: row.userName } });
+          });
+        }
+      );
+    }
   });
 });
 

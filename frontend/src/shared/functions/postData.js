@@ -6,7 +6,7 @@ export const postData = (values, ...fetchUrl) => {
       "auth-token": localStorage.getItem("token") ?? "",
       "auth-userName": localStorage.getItem("userName") ?? "",
     },
-    body: values,
+    body: JSON.stringify(values),
   })
     .then((res) => res.json())
     .then((result) => {

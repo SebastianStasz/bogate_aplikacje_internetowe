@@ -52,7 +52,7 @@ app.post("/api/login", (req, res) => {
 
 app.post("/api/signUp", (req, res) => {
   const newData = req.body;
-  const email = "emailexamp";
+  const email = "emailexample";
   var sql = `SELECT id from user WHERE userName = '${newData.login}' OR email = '${email}'`;
   db.get(sql, [], (err, row) => {
     if (err) {
@@ -61,27 +61,18 @@ app.post("/api/signUp", (req, res) => {
     if (row) {
       return res.status(400).json({ error: "Użytkownik już istnieje" });
     } else {
-      sql = `INSERT INTO user (email, password, userName, createdAt) VALUES (?,?,?,?) RETURNING *;`;
-      db.run(
+      sql = `INSERT INTO user (email, password, userName, createdAt) VALUES (?,?,?,?) RETURNING id, userName;`;
+      db.get(
         sql,
         [email, newData.password, newData.login, "jakas data"],
-        function (err) {
+        (err, row) => {
           if (err) {
             return res.status(400).json({ error: err.message });
           }
-          sql = `SELECT userName from user WHERE id = ${this.lastID}`;
-          db.get(sql, [], (err, row) => {
-            if (err) {
-              return res.status(400).json({ error: err.message });
-            }
-            const token = jwt.sign(
-              { userId: this.lastID },
-              process.env.SECRET_KEY
-            );
-            res
-              .status(200)
-              .json({ auth: { token: token, userName: row.userName } });
-          });
+          const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
+          res
+            .status(200)
+            .json({ auth: { token: token, userName: row.userName } });
         }
       );
     }

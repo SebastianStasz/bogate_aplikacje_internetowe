@@ -1,9 +1,11 @@
 <script setup>
     import { reactive } from 'vue'
+    import { postData } from '../shared/functions/postData';
     const formValues = reactive({ login: 'JanNowak', password: 'a123456' })
 
     const sendValues = () =>{
-        console.log('send values')
+        console.log('send values', formValues)
+        postData(formValues, "login")
     }
 </script>
 

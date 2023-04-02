@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { authenticationGuard } from "./shared/functions/authenticationGuard";
 
 export default createRouter({
   history: createWebHistory(),
@@ -14,6 +15,7 @@ export default createRouter({
     {
       path: "/myRecipes",
       component: () => import('./views/MyRecipesPage.vue'),
+      beforeEnter: authenticationGuard,
     },
   ],
 });

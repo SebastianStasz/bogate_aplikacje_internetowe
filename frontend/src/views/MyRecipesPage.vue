@@ -4,7 +4,7 @@
 
 
 <template>
-    <p>Moje przepisy</p>
-    <p><router-link to="/logIn">Logowanie</router-link></p>
-      <router-link to="/">Start</router-link>
-  </template>
+  <p>Moje przepisy</p>
+  <router-link to="/"><v-btn>Start</v-btn></router-link>
+  <router-link to="/logIn"><v-btn>Logowanie</v-btn></router-link>
+</template>

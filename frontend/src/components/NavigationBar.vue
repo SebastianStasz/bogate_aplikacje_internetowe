@@ -36,8 +36,8 @@ export default {
             drawer: true,
             menuItems: [
                 { title: 'Strona główna', path: '/', icon: 'mdi-home' },
-                { title: 'Zaloguj', path: '/logIn', icon: 'mdi-star' },
-                { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-star' }
+                { title: 'Zaloguj', path: '/logIn', icon: 'mdi-account' },
+                { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-account-plus' }
                 // { title: 'Moje przepisy', path: '/myrecipes', icon: 'mdi-cog' },
             ]
         }

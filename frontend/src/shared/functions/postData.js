@@ -4,6 +4,7 @@ export const postData = (values, ...fetchUrl) => {
     headers: {
       "Content-Type": "application/json",
       "auth-token": localStorage.getItem("token") ?? "",
+      "auth-userName": localStorage.getItem("userName") ?? "",
     },
     body: values,
   })
@@ -11,6 +12,7 @@ export const postData = (values, ...fetchUrl) => {
     .then((result) => {
       if (result.auth) {
         localStorage.setItem("token", result.auth.token);
+        localStorage.setItem("userName", result.auth.userName);
       }
       console.log(localStorage);
       console.log("POST", result);

@@ -14,10 +14,12 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
       db.run(
         `CREATE TABLE user (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email text,
+            email text UNIQUE,
             password text,
-            userName text,
-            createdAt text
+            userName text UNIQUE,
+            createdAt text,
+            CONSTRAINT email_unique UNIQUE (email),
+            CONSTRAINT userName_unique UNIQUE (userName)
             )`,
         (err) => {}
       );

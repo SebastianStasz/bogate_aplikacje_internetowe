@@ -6,11 +6,7 @@ export const getData = (...fetchUrl) => {
   })
     .then((res) => res.json())
     .then((result) => {
-      if (result.auth) {
-        localStorage.setItem("token", result.auth.token);
-      }
-      console.log(localStorage);
-      console.log("token", result);
+      console.log("GET", result);
       return result;
     })
     .catch((err) => {

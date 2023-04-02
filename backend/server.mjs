@@ -5,20 +5,19 @@ import path from "path";
 import history from "connect-history-api-fallback";
 import { db } from "./database.mjs";
 import jwt from "jsonwebtoken";
+import * as dotenv from 'dotenv'
 
-const HOST = "localhost";
-const PORT = 5000;
+dotenv.config()
 const app = express();
 const __dirname = path.resolve();
-const SECRET_KEY = "super-secret-key-that-should-not-be-there";
 
 // WARNING: order of those app. actually matters
 
 app.use(cors());
 
 app.get("/api/getData", (req, res) => {
-  // var token = jwt.sign({ userId: 1 }, SECRET_KEY);
-  // var decoded = jwt.verify(token, SECRET_KEY);
+  // var token = jwt.sign({ userId: 1 }, process.env.SECRET_KEY);
+  // var decoded = jwt.verify(token, process.env.SECRET_KEY);
   const sql = `select * from recipe`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -30,7 +29,7 @@ app.get("/api/getData", (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-  var token = jwt.sign({ userId: 1 }, SECRET_KEY);
+  var token = jwt.sign({ userId: 1 }, process.env.SECRET_KEY);
   const sql = `select * from recipe`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -43,7 +42,7 @@ app.post("/api/login", (req, res) => {
 
 app.get("/api/myRecipes", (req, res) => {
   var token = req.header("auth-token");
-  var decoded = jwt.verify(token, SECRET_KEY);
+  var decoded = jwt.verify(token, process.env.SECRET_KEY);
   if (true) {
     const sql = `select * from recipe`;
     db.all(sql, [], (err, rows) => {
@@ -64,6 +63,6 @@ app.use(staticEx(join(__dirname, "..", "frontend", "dist")));
 //     res.sendFile(join(__dirname, "..", "frontend", "dist"))
 // })
 
-app.listen(PORT, HOST, () => {
+app.listen(process.env.PORT, process.env.HOST, () => {
   console.log("server started on port 5000");
 });

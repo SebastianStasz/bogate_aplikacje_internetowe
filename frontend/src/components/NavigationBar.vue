@@ -37,7 +37,7 @@ export default {
             menuItems: [
                 { title: 'Strona główna', path: '/', icon: 'mdi-home' },
                 { title: 'Zaloguj', path: '/logIn', icon: 'mdi-star' },
-                { title: 'Zarejestruj', path: '/signin', icon: 'mdi-star' }
+                { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-star' }
                 // { title: 'Moje przepisy', path: '/myrecipes', icon: 'mdi-cog' },
             ]
         }

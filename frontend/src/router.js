@@ -12,6 +12,10 @@ export default createRouter({
       component: () => import('./views/LogInPage.vue'),
     },
     {
+      path: "/signUp",
+      component: () => import('./views/SignUpPage.vue'),
+    },
+    {
       path: "/myRecipes",
       component: () => import('./views/MyRecipesPage.vue'),
     },

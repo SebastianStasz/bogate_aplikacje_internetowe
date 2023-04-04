@@ -6,6 +6,7 @@ import history from "connect-history-api-fallback";
 import { db } from "./database.mjs";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
@@ -13,11 +14,18 @@ const __dirname = path.resolve();
 
 // WARNING: order of those app. actually matters
 
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    // origin : [process.env.HOST],
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const authenticateToken = (req, res, next) => {
-  const token = req.header("auth-token");
+  const token = req.cookies.token
   if (token) {
     jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
       if (err) return res.sendStatus(401);
@@ -46,6 +54,7 @@ app.post("/api/login", (req, res) => {
       res.status(400).json({ error: err.message });
       return;
     }
+    res.cookie("token", token, { httpOnly: true, secure: true });
     res.status(200).json({ auth: { token: token, userName: "Przemek" } });
   });
 });

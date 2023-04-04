@@ -8,13 +8,13 @@ export const getData = (...fetchUrl) => {
     headers: {
       "Access-Control-Allow-Origin":
         "http://127.0.0.1/:5173, http://127.0.0.1/:5000",
-      "auth-token": localStorage.getItem("token") ?? "",
-      "auth-userName": localStorage.getItem("userName") ?? "",
     },
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status === 401) return false;
+      return res.json();
+    })
     .then((result) => {
-      console.log("GET", result);
       return result;
     })
     .catch((err) => {

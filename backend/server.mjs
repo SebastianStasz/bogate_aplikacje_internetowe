@@ -25,7 +25,7 @@ app.use(
 app.use(express.json());
 
 const authenticateToken = (req, res, next) => {
-  const token = req.cookies.token
+  const token = req.cookies.token;
   if (token) {
     jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
       if (err) return res.sendStatus(401);
@@ -44,6 +44,10 @@ app.get("/api/getData", (req, res) => {
     }
     res.status(200).json(rows);
   });
+});
+
+app.get("/api/authenticatePath", authenticateToken, (req, res) => {
+  res.status(200).json(true);
 });
 
 app.post("/api/login", (req, res) => {

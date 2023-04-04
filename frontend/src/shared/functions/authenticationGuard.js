@@ -1,8 +1,8 @@
-export const authenticationGuard = (to, from, next) => {
-  if (
-    localStorage.getItem("token") == null ||
-    localStorage.getItem("userName") == null
-  ) {
+import { getData } from "./getData";
+
+export const authenticationGuard = async (to, from, next) => {
+  const permitted = await getData("authenticatePath");
+  if (!permitted) {
     next({
       path: "/logIn",
       params: { nextUrl: to.fullPath },

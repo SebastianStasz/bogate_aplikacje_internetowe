@@ -35,6 +35,10 @@ const authenticateToken = (req, res, next) => {
   } else res.sendStatus(401);
 };
 
+const validateStringLength = (text, setLength) => {};
+const validateEmail = (email) => {};
+const validateRepeatedString = (text, repeated) => {};
+
 app.get("/api/getData", (req, res) => {
   const sql = `select * from user`;
   db.all(sql, [], (err, rows) => {
@@ -51,21 +55,26 @@ app.get("/api/authenticatePath", authenticateToken, (req, res) => {
 });
 
 app.post("/api/login", (req, res) => {
-  var token = jwt.sign({ userId: 1 }, process.env.SECRET_KEY);
-  const sql = `select * from recipe`;
-  db.all(sql, [], (err, rows) => {
+  const loginData = req.body;
+  const sql = `select id from user WHERE userName = '${loginData.login}' AND password = '${loginData.password}'`;
+  db.get(sql, [], (err, row) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
     }
+    if (!row) return res.status(400).json("Niepoprawne dane");
+    const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
     res.cookie("token", token, { httpOnly: true, secure: true });
-    res.status(200).json({ auth: { token: token, userName: "Przemek" } });
+    res.status(200).json("Pomyślnie zalogowano");
   });
 });
 
 app.post("/api/signUp", (req, res) => {
   const newData = req.body;
-  const email = "emailexample";
+  // validateStringLength(newData.login, 6)
+  // validateEmail(newData.email)
+  // validateRepeatedString(newData.password, newData.repeatedPassword)
+  const email = "emailexample2";
   var sql = `SELECT id from user WHERE userName = '${newData.login}' OR email = '${email}'`;
   db.get(sql, [], (err, row) => {
     if (err) {
@@ -77,15 +86,14 @@ app.post("/api/signUp", (req, res) => {
       sql = `INSERT INTO user (email, password, userName, createdAt) VALUES (?,?,?,?) RETURNING id, userName;`;
       db.get(
         sql,
-        [email, newData.password, newData.login, "jakas data"],
+        [email, newData.password, newData.login, Date.now()],
         (err, row) => {
           if (err) {
             return res.status(400).json({ error: err.message });
           }
           const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-          res
-            .status(200)
-            .json({ auth: { token: token, userName: row.userName } });
+          res.cookie("token", token, { httpOnly: true, secure: true });
+          res.status(200).json("Pomyślnie zarejestrowano");
         }
       );
     }

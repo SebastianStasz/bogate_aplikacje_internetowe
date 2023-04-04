@@ -31,7 +31,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
             recipeName text,
             ingredients text,
             preparation text,
-            createdAt text,
+            createdAt integer,
             FOREIGN KEY(userId) REFERENCES user(id)
             )`,
         (err) => {}

@@ -3,7 +3,9 @@
     <form class="registration-form" @submit.prevent="submitForm">
       <h2>Zarejestruj się</h2>
       <div class="form-group">
-        <label for="login">Nazwa użytkownika <span class="star"> *</span></label>
+        <label for="login"
+          >Nazwa użytkownika <span class="star"> *</span></label
+        >
         <input
           v-model="login"
           type="text"
@@ -55,12 +57,16 @@
           required
         />
         <span
-          v-if="passwordRepeat && passwordRepeat.length > 0 && !isPasswordRepeatValid"
+          v-if="
+            passwordRepeat &&
+            passwordRepeat.length > 0 &&
+            !isPasswordRepeatValid
+          "
           class="warning"
           >Hasła muszą być takie same!</span
         >
       </div>
-      <button type="submit" class="submit-btn" :disabled="!isFormValid" >
+      <button type="submit" class="submit-btn" :disabled="!isFormValid">
         Zarejestruj się
       </button>
     </form>
@@ -92,14 +98,19 @@ export default {
       return this.login.trim().length > 3;
     },
     isFormValid() {
-      return this.isEmailValid && this.isPasswordValid && this.isLoginValid && this.isPasswordRepeatValid;
+      return (
+        this.isEmailValid &&
+        this.isPasswordValid &&
+        this.isLoginValid &&
+        this.isPasswordRepeatValid
+      );
     },
   },
   methods: {
     submitForm() {
       if (this.isFormValid) {
-        console.log(login.value, email.value, password.value)
-        this.$router.push("/")
+        console.log(login.value, email.value, password.value);
+        this.$router.push("/");
       }
     },
   },
@@ -150,6 +161,17 @@ input {
   color: black;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #f2f2f2 inset !important;
+}
+
+input:-webkit-autofill {
+  -webkit-text-fill-color: black !important;
+}
+
 .warning {
   color: rgb(217, 27, 27);
   font-size: 12px;
@@ -167,7 +189,7 @@ input {
   transition: background-color 0.3s ease;
 }
 
-.submit-btn:disabled{
+.submit-btn:disabled {
   background-color: gray;
 }
 

@@ -112,6 +112,17 @@ input {
   color: black;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #f2f2f2 inset !important;
+}
+
+input:-webkit-autofill {
+  -webkit-text-fill-color: black !important;
+}
+
 .warning {
   color: rgb(217, 27, 27);
   font-size: 12px;

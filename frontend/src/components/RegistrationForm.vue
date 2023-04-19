@@ -115,6 +115,8 @@ function submitForm() {
 
 <style scoped>
 .registration-form {
+  display: flex;
+  flex-direction: column;
   width: 30rem;
   margin: 0 auto;
   padding: 20px;
@@ -174,6 +176,7 @@ input:-webkit-autofill {
 }
 
 .submit-btn {
+  align-self: center;
   margin-top: 1rem;
   background-color: #f2580a;
   color: white;

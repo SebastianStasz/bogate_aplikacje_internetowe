@@ -56,6 +56,7 @@ app.get("/api/authenticatePath", authenticateToken, (req, res) => {
 
 app.post("/api/login", (req, res) => {
   const loginData = req.body;
+  // change to user or email
   const sql = `select id from user WHERE userName = '${loginData.login}' AND password = '${loginData.password}'`;
   db.get(sql, [], (err, row) => {
     if (err) {
@@ -74,8 +75,7 @@ app.post("/api/signUp", (req, res) => {
   // validateStringLength(newData.login, 6)
   // validateEmail(newData.email)
   // validateRepeatedString(newData.password, newData.repeatedPassword)
-  const email = "emailexample2";
-  var sql = `SELECT id from user WHERE userName = '${newData.login}' OR email = '${email}'`;
+  var sql = `SELECT id from user WHERE userName = '${newData.login}' OR email = '${newData.email}'`;
   db.get(sql, [], (err, row) => {
     if (err) {
       return res.status(400).json({ error: err.message });
@@ -86,7 +86,7 @@ app.post("/api/signUp", (req, res) => {
       sql = `INSERT INTO user (email, password, userName, createdAt) VALUES (?,?,?,?) RETURNING id, userName;`;
       db.get(
         sql,
-        [email, newData.password, newData.login, Date.now()],
+        [newData.email, newData.password, newData.login, Date.now()],
         (err, row) => {
           if (err) {
             return res.status(400).json({ error: err.message });

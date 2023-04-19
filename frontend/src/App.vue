@@ -1,10 +1,12 @@
-<script setup>
-</script>
-
 <template>
-  <router-view></router-view>
+  <v-app>
+    <navigation-bar></navigation-bar>
+    <router-view></router-view>
+  </v-app>
 </template>
 
-<style scoped>
+<script setup>
+import NavigationBar from './components/NavigationBar.vue'
+</script>
 
-</style>
+<style scoped></style>

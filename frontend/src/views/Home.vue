@@ -1,10 +1,7 @@
-<script setup>
-
-</script>
-
-
 <template>
-    <p>Strona domowa!</p>
-      <p><router-link to="/logIn">Logowanie</router-link></p>
-      <router-link to="/myrecipes">Moje przepisy</router-link>
-  </template>
+  <RecipeList></RecipeList>
+</template>
+
+<script setup>
+import RecipeList from '../components/RecipeList.vue';
+</script>

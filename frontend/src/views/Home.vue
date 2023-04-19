@@ -1,5 +1,7 @@
-<script setup></script>
-
 <template>
-  <p>Strona główna</p>
+  <RecipeList></RecipeList>
 </template>
+
+<script setup>
+import RecipeList from '../components/RecipeList.vue';
+</script>

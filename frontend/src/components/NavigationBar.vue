@@ -17,7 +17,7 @@
         </v-toolbar-items>
     </v-app-bar>
 
-    <v-navigation-drawer class="d-flex d-md-none" v-model="drawer" location="bottom" temporary>
+    <v-navigation-drawer class="d-flex d-md-none navigation text-center" v-model="drawer" location="bottom" temporary>
         <li class="navigation-list" v-for="item in menuItems">
             <v-btn class="mt-4 w-50" flat :key="item.title" :to="item.path">
                 <v-icon left dark>{{ item.icon }}</v-icon>

@@ -1,8 +1,16 @@
-<script setup>
-</script>
-
 <template>
-  <router-view></router-view>
+  <v-app>
+    <navigation-bar></navigation-bar>
+
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+
+  </v-app>
 </template>
+
+<script setup>
+import NavigationBar from './components/NavigationBar.vue'
+</script>
 
 <style scoped></style>

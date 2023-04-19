@@ -39,9 +39,10 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { postData } from '../shared/functions/postData';
 
-const login = ref("");
-const password = ref("");
+const login = ref("Przemek");
+const password = ref("pass123");
 
 const isPasswordValid = computed(() => {
   return password.value.trim().length > 5;
@@ -57,7 +58,7 @@ const isFormValid = computed(() => {
 
 function submitForm() {
   if (isFormValid.value) {
-    console.log(login.value, password.value);
+    postData({ login: login.value, password: password.value }, "login")
   }
 }
 </script>

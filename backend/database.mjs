@@ -14,10 +14,12 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
       db.run(
         `CREATE TABLE user (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email text,
+            email text UNIQUE,
             password text,
-            userName text,
-            createdAt text
+            userName text UNIQUE,
+            createdAt text,
+            CONSTRAINT email_unique UNIQUE (email),
+            CONSTRAINT userName_unique UNIQUE (userName)
             )`,
         (err) => {}
       );
@@ -29,7 +31,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
             recipeName text,
             ingredients text,
             preparation text,
-            createdAt text,
+            createdAt integer,
             FOREIGN KEY(userId) REFERENCES user(id)
             )`,
         (err) => {}

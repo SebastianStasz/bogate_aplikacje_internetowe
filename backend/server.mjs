@@ -4,18 +4,109 @@ import cors from "cors";
 import path from "path";
 import history from "connect-history-api-fallback";
 import { db } from "./database.mjs";
+import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import {
+  validateStringLength,
+  validateEmail,
+  validateRepeatedString,
+  validatePostData,
+} from "./validators.mjs";
 
-const HOST = "localhost";
-const PORT = 5000;
+dotenv.config();
 const app = express();
 const __dirname = path.resolve();
 
 // WARNING: order of those app. actually matters
 
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    // origin : [process.env.HOST],
+    origin: true,
+    credentials: true,
+  })
+);
+app.use(express.json());
+
+const authenticateToken = (req, res, next) => {
+  const token = req.cookies.token;
+  if (token) {
+    jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+      if (err) return res.sendStatus(401);
+      req.user = user;
+      next();
+    });
+  } else res.sendStatus(401);
+};
 
 app.get("/api/getData", (req, res) => {
-  const sql = `select * from recipe`;
+  const sql = `select * from user`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.status(200).json(rows);
+  });
+});
+
+app.get("/api/authenticatePath", authenticateToken, (req, res) => {
+  res.status(200).json(true);
+});
+
+app.post("/api/login", (req, res) => {
+  const loginData = req.body;
+  const sql = `select id from user WHERE (userName = '${loginData.login}' OR email = '${loginData.login}') AND password = '${loginData.password}'`;
+  db.get(sql, [], (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    if (!row) return res.status(400).json("Niepoprawne dane");
+    const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
+    res.cookie("token", token, { httpOnly: true, secure: true });
+    res.status(200).json("Pomyślnie zalogowano");
+  });
+});
+
+app.post("/api/signUp", (req, res) => {
+  const newData = req.body;
+  const validate = validatePostData(
+    validateStringLength(newData.login, 4),
+    validateEmail(newData.email),
+    validateStringLength(newData.password, 6),
+    validateRepeatedString(newData.password, newData.passwordRepeat)
+  );
+  if (validate) return res.status(400).json(validate);
+  var sql = `SELECT id from user WHERE userName = '${newData.login}' OR email = '${newData.email}'`;
+  db.get(sql, [], (err, row) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    if (row) {
+      return res.status(400).json({ error: "Użytkownik już istnieje" });
+    } else {
+      sql = `INSERT INTO user (email, password, userName, createdAt) VALUES (?,?,?,?) RETURNING id, userName;`;
+      db.get(
+        sql,
+        [newData.email, newData.password, newData.login, Date.now()],
+        (err, row) => {
+          if (err) {
+            return res.status(400).json({ error: err.message });
+          }
+          const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
+          res.cookie("token", token, { httpOnly: true, secure: true });
+          res.status(200).json("Pomyślnie zarejestrowano");
+        }
+      );
+    }
+  });
+});
+
+app.get("/api/myRecipes", authenticateToken, (req, res) => {
+  const sql = `select * from recipe WHERE userId = ${req.user.userId}`;
   db.all(sql, [], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -29,10 +120,6 @@ app.get("/api/getData", (req, res) => {
 app.use(history());
 app.use(staticEx(join(__dirname, "..", "frontend", "dist")));
 
-// app.get('/*', (req, res) => {
-//     res.sendFile(join(__dirname, "..", "frontend", "dist"))
-// })
-
-app.listen(PORT, HOST, () => {
+app.listen(process.env.PORT, process.env.HOST, () => {
   console.log("server started on port 5000");
 });

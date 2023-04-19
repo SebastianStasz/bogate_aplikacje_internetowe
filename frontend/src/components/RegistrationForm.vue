@@ -75,6 +75,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { postData } from '../shared/functions/postData';
 
 const login = ref("");
 const email = ref("");
@@ -108,7 +109,7 @@ const isFormValid = computed(() => {
 
 function submitForm() {
   if (isFormValid.value) {
-    console.log(login.value, email.value, password.value);
+    postData({ login: login.value, email: email.value, password: password.value, passwordRepeat: passwordRepeat.value }, "signUp")
   }
 }
 </script>

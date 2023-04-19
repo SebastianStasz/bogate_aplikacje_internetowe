@@ -61,4 +61,10 @@ p {
 span {
     color: #EEA10C;
 }
+
+img {
+    display: block;
+    border-top-left-radius: 4%;
+    border-top-right-radius: 4%;
+}
 </style>

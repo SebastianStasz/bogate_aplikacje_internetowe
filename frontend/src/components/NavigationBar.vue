@@ -27,20 +27,14 @@
     </v-navigation-drawer>
 </template>
 
-<script>
-export default {
-    name: "App",
-    data() {
-        return {
-            appTitle: 'Świat przepisów',
-            drawer: true,
-            menuItems: [
-                { title: 'Strona główna', path: '/', icon: 'mdi-home' },
-                { title: 'Zaloguj', path: '/logIn', icon: 'mdi-account' },
-                { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-account-plus' }
-                // { title: 'Moje przepisy', path: '/myrecipes', icon: 'mdi-cog' },
-            ]
-        }
-    },
-};
+<script setup>
+import { ref } from 'vue'
+
+const appTitle = "Świat przepisów"
+const drawer = ref(false)
+const menuItems = [
+    { title: 'Strona główna', path: '/', icon: 'mdi-home' },
+    { title: 'Zaloguj', path: '/logIn', icon: 'mdi-account' },
+    { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-account-plus' }
+]
 </script>

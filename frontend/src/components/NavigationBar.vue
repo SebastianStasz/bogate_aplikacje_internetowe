@@ -34,6 +34,7 @@ const appTitle = "Świat przepisów"
 const drawer = ref(false)
 const menuItems = [
     { title: 'Strona główna', path: '/', icon: 'mdi-home' },
+    { title: 'Moje przepisy', path: '/myRecipes', icon: 'mdi-home' },
     { title: 'Zaloguj', path: '/logIn', icon: 'mdi-account' },
     { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-account-plus' }
 ]

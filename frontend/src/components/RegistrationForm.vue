@@ -109,7 +109,7 @@ const isFormValid = computed(() => {
 
 function submitForm() {
   if (isFormValid.value) {
-    postData({ login: login.value, email: email.value, password: password.value }, "signUp")
+    postData({ login: login.value, email: email.value, password: password.value, passwordRepeat: passwordRepeat.value }, "signUp")
   }
 }
 </script>

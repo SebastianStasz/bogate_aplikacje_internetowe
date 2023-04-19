@@ -7,6 +7,12 @@ import { db } from "./database.mjs";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import {
+  validateStringLength,
+  validateEmail,
+  validateRepeatedString,
+  validatePostData,
+} from "./validators.mjs";
 
 dotenv.config();
 const app = express();
@@ -35,10 +41,6 @@ const authenticateToken = (req, res, next) => {
   } else res.sendStatus(401);
 };
 
-const validateStringLength = (text, setLength) => {};
-const validateEmail = (email) => {};
-const validateRepeatedString = (text, repeated) => {};
-
 app.get("/api/getData", (req, res) => {
   const sql = `select * from user`;
   db.all(sql, [], (err, rows) => {
@@ -56,8 +58,7 @@ app.get("/api/authenticatePath", authenticateToken, (req, res) => {
 
 app.post("/api/login", (req, res) => {
   const loginData = req.body;
-  // change to user or email
-  const sql = `select id from user WHERE userName = '${loginData.login}' AND password = '${loginData.password}'`;
+  const sql = `select id from user WHERE (userName = '${loginData.login}' OR email = '${loginData.login}') AND password = '${loginData.password}'`;
   db.get(sql, [], (err, row) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -72,9 +73,13 @@ app.post("/api/login", (req, res) => {
 
 app.post("/api/signUp", (req, res) => {
   const newData = req.body;
-  // validateStringLength(newData.login, 6)
-  // validateEmail(newData.email)
-  // validateRepeatedString(newData.password, newData.repeatedPassword)
+  const validate = validatePostData(
+    validateStringLength(newData.login, 4),
+    validateEmail(newData.email),
+    validateStringLength(newData.password, 6),
+    validateRepeatedString(newData.password, newData.passwordRepeat)
+  );
+  if (validate) return res.status(400).json(validate);
   var sql = `SELECT id from user WHERE userName = '${newData.login}' OR email = '${newData.email}'`;
   db.get(sql, [], (err, row) => {
     if (err) {

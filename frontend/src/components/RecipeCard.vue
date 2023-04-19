@@ -4,15 +4,21 @@
         <div class="recipe-content">
             <h4>{{ props.title }}</h4>
             <p>{{ props.description }}</p>
+            <div class="card-footer">
+                <span><v-rating v-model="props.rating" class="ma-2" density="compact"></v-rating></span>
+                <MainButton title="Zobacz opis"></MainButton>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
+import MainButton from './MainButton.vue';
 const props = defineProps({
     title: String,
-    description: String
-});
+    description: String,
+    rating: Number
+})
 </script>
 
 <style scoped>
@@ -28,11 +34,16 @@ const props = defineProps({
     align-items: flex-start;
     padding: 24px;
     gap: 12px;
-    width: 390px;
-    height: 233px;
+    min-height: 233px;
     background: #FFFFFF;
-    box-shadow: 0px 15px 30px rgba(224, 224, 236, 0.8);
-    border-radius: 0px 0px 20px 20px;
+    box-shadow: 0px 5px 10px rgba(224, 224, 236, 0.3);
+    border-radius: 0px 0px 10px 10px;
+}
+
+.card-footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
 h4 {
@@ -45,5 +56,9 @@ p {
     font-size: 16px;
     line-height: 24px;
     color: #6B6262;
+}
+
+span {
+    color: #EEA10C;
 }
 </style>

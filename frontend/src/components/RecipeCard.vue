@@ -2,8 +2,10 @@
     <div class="card">
         <img src="https://picsum.photos/390/242?random=1">
         <div class="recipe-content">
-            <h4>{{ props.title }}</h4>
-            <p>{{ props.description }}</p>
+            <div>
+                <h4>{{ props.title }}</h4>
+                <p>{{ props.description }}</p>
+            </div>
             <div class="card-footer">
                 <span><v-rating v-model="props.rating" class="ma-2" density="compact"></v-rating></span>
                 <MainButton title="Zobacz opis"></MainButton>
@@ -32,12 +34,23 @@ const props = defineProps({
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: space-between;
     padding: 24px;
     gap: 12px;
-    min-height: 233px;
     background: #FFFFFF;
     box-shadow: 0px 5px 10px rgba(224, 224, 236, 0.3);
     border-radius: 0px 0px 10px 10px;
+    height: 240px;
+    overflow: hidden;
+}
+
+p {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    /* number of lines to show */
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-footer {

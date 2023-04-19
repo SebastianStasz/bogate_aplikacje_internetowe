@@ -1,13 +1,7 @@
 <template>
-    <registration></registration>
+  <registration></registration>
 </template>
 
-<script>
-import Registration from '../components/Registration.vue'; 
-
-export default{
-    components: {
-        'registration': Registration
-    }
-}
+<script setup>
+import Registration from "../components/Registration.vue";
 </script>

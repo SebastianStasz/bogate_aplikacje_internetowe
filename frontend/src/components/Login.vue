@@ -37,35 +37,29 @@
   </main>
 </template>
 
-<script>
-export default {
-  name: "Login",
-  data() {
-    return {
-      login: "",
-      password: "",
-    };
-  },
-  computed: {
-    isPasswordValid() {
-      return this.password.trim().length > 5;
-    },
-    isLoginValid() {
-      return this.login.trim().length > 3;
-    },
-    isFormValid() {
-      return this.isPasswordValid && this.isLoginValid;
-    },
-  },
-  methods: {
-    submitForm() {
-      if (this.isFormValid) {
-        console.log(login.value, password.value);
-        this.$router.push("/");
-      }
-    },
-  },
-};
+<script setup>
+import { ref, computed } from "vue";
+
+const login = ref("");
+const password = ref("");
+
+const isPasswordValid = computed(() => {
+  return password.value.trim().length > 5;
+});
+
+const isLoginValid = computed(() => {
+  return login.value.trim().length > 3;
+});
+
+const isFormValid = computed(() => {
+  return isPasswordValid.value && isLoginValid.value;
+});
+
+function submitForm() {
+  if (isFormValid.value) {
+    console.log(login.value, password.value);
+  }
+}
 </script>
 
 <style scoped>

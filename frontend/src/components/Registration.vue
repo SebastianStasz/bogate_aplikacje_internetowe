@@ -73,48 +73,44 @@
   </main>
 </template>
 
-<script>
-export default {
-  name: "Registration",
-  data() {
-    return {
-      login: "",
-      email: "",
-      password: "",
-      passwordRepeat: "",
-    };
-  },
-  computed: {
-    isEmailValid() {
-      return this.email.includes("@") && this.email.trim().length > 6;
-    },
-    isPasswordValid() {
-      return this.password.trim().length > 5;
-    },
-    isPasswordRepeatValid() {
-      return this.passwordRepeat === password.value;
-    },
-    isLoginValid() {
-      return this.login.trim().length > 3;
-    },
-    isFormValid() {
-      return (
-        this.isEmailValid &&
-        this.isPasswordValid &&
-        this.isLoginValid &&
-        this.isPasswordRepeatValid
-      );
-    },
-  },
-  methods: {
-    submitForm() {
-      if (this.isFormValid) {
-        console.log(login.value, email.value, password.value);
-        this.$router.push("/");
-      }
-    },
-  },
-};
+<script setup>
+import { ref, computed } from "vue";
+
+const login = ref("");
+const email = ref("");
+const password = ref("");
+const passwordRepeat = ref("");
+
+const isEmailValid = computed(() => {
+  return email.value.includes("@") && email.value.trim().length > 6;
+});
+
+const isPasswordValid = computed(() => {
+  return password.value.trim().length > 5;
+});
+
+const isPasswordRepeatValid = computed(() => {
+  return passwordRepeat.value === password.value;
+});
+
+const isLoginValid = computed(() => {
+  return login.value.trim().length > 3;
+});
+
+const isFormValid = computed(() => {
+  return (
+    isEmailValid.value &&
+    isPasswordValid.value &&
+    isLoginValid.value &&
+    isPasswordRepeatValid.value
+  );
+});
+
+function submitForm() {
+  if (isFormValid.value) {
+    console.log(login.value, email.value, password.value);
+  }
+}
 </script>
 
 <style scoped>

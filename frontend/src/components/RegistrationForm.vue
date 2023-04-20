@@ -119,7 +119,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 70%;
+  height: 80%;
 }
 .registration-form {
   display: flex;

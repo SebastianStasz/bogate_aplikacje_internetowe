@@ -68,7 +68,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60%;
+  height: 70%;
 }
 .login-form {
   display: flex;

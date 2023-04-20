@@ -10,28 +10,40 @@
         <div class="pagination">
             <v-pagination
                 v-model="currentPage"
-                :length="15"
-                :total-visible="7"
+                :length="Math.ceil(recipesNumber / CONFIG.RECIPES_PER_PAGE)"
+                :total-visible="5"
             ></v-pagination>
         </div>
     </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { getData } from '../shared/functions/getData';
 import RecipeCard from './RecipeCard.vue';
 import { computed } from '@vue/reactivity';
+import { CONFIG } from '../shared/constants/config';
 
 const recipesList = ref([])
 const loadingData = ref(true)
 const currentPage = ref(1)
+const recipesNumber = ref(6)
 const isListEmpty = computed(()=> recipesList.value?.length === 0)
 
-onMounted(async () => {
+const getRecipes = async () => {
     loadingData.value = true
-    recipesList.value = await getData("recipesList", 1)
+    const data = await getData("recipesList", currentPage.value)
+    recipesList.value = data.recipes
+    recipesNumber.value = data.recipesNumber
     loadingData.value = false
+};
+
+onMounted(() => {
+    getRecipes()
+});
+
+watch(currentPage, () => {
+    getRecipes()
 });
 
 </script>

@@ -15,6 +15,7 @@ export const getData = (...fetchUrl) => {
       return res.json();
     })
     .then((result) => {
+      console.log("GET", result)
       return result;
     })
     .catch((err) => {

@@ -3,7 +3,7 @@
     <div v-else>
         <div v-if="!isListEmpty" class="wrapper">
             <div v-for="recipe of recipesList" :key="recipe.id">
-                <RecipeCard :title="recipe.title" :description="recipe.description" :rating="4.5"></RecipeCard>
+                <RecipeCard :title="recipe.title" :description="recipe.description" :rating="recipe.rating"></RecipeCard>
             </div>
         </div>
         <div v-else>Brak przepisów</div>

@@ -104,8 +104,11 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
               insert =
                 "INSERT INTO recipe_rating (userId, recipeId, rating) VALUES (?,?,?)";
               db.run(insert, [1, 3, 3.5]);
+              db.run(insert, [1, 2, 3]);
+              db.run(insert, [1, 1, 5]);
+              db.run(insert, [2, 3, 1]);
               db.run(insert, [2, 2, 4]);
-              db.run(insert, [3, 1, 1.5]);
+              db.run(insert, [3, 1, 4.5]);
             });
           }
         }

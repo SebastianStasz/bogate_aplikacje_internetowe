@@ -117,7 +117,7 @@ app.get("/api/myRecipes", authenticateToken, (req, res) => {
 });
 
 app.get("/api/recipesList", (req, res) => {
-  const sql = `select id, recipeName, description from recipe`;
+  const sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
   db.all(sql, [], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });

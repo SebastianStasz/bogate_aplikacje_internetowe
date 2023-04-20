@@ -116,8 +116,11 @@ app.get("/api/myRecipes", authenticateToken, (req, res) => {
   });
 });
 
-app.get("/api/recipesList", (req, res) => {
-  const sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
+app.get("/api/recipesList/:page", (req, res) => {
+  const recipesPerPage = 6;
+  const currentPage = parseInt(req.params.page);
+  const sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe
+  LIMIT ${recipesPerPage} OFFSET ${(currentPage - 1) * recipesPerPage}`;
   db.all(sql, [], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });

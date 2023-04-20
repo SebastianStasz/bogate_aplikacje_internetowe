@@ -115,6 +115,12 @@ function submitForm() {
 </script>
 
 <style scoped>
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70%;
+}
 .registration-form {
   display: flex;
   flex-direction: column;

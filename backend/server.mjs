@@ -116,6 +116,27 @@ app.get("/api/myRecipes", authenticateToken, (req, res) => {
   });
 });
 
+app.get("/api/recipesList/:page", (req, res) => {
+  const recipesPerPage = 6;
+  const currentPage = parseInt(req.params.page);
+  const sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res
+      .status(200)
+      .json({
+        recipes: rows.slice(
+          (currentPage - 1) * recipesPerPage,
+          (currentPage - 1) * recipesPerPage + recipesPerPage
+        ),
+        recipesNumber: rows.length,
+      });
+  });
+});
+
 // This needs to be after all /api/ routes
 app.use(history());
 app.use(staticEx(join(__dirname, "..", "frontend", "dist")));

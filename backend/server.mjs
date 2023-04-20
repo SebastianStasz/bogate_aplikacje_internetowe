@@ -116,6 +116,17 @@ app.get("/api/myRecipes", authenticateToken, (req, res) => {
   });
 });
 
+app.get("/api/recipesList", (req, res) => {
+  const sql = `select id, recipeName, description from recipe`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.status(200).json(rows);
+  });
+});
+
 // This needs to be after all /api/ routes
 app.use(history());
 app.use(staticEx(join(__dirname, "..", "frontend", "dist")));

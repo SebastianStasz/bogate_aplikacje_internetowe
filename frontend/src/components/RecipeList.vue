@@ -1,25 +1,31 @@
 <template>
-    <div class="wrapper">
-        <div v-for="recipe of recipes" :key="recipe.id">
-            <RecipeCard :title="recipe.title" :description="recipe.description" :rating="recipe.rating"></RecipeCard>
+    <div v-if="loadingData">Tu komponent pokazujący ładowanie</div>
+    <div v-else>
+        <div v-if="!isListEmpty" class="wrapper">
+            <div v-for="recipe of recipesList" :key="recipe.id">
+                <RecipeCard :title="recipe.title" :description="recipe.description" :rating="4.5"></RecipeCard>
+            </div>
         </div>
+        <div v-else>Brak przepisów</div>
     </div>
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue';
+import { getData } from '../shared/functions/getData';
 import RecipeCard from './RecipeCard.vue';
+import { computed } from '@vue/reactivity';
 
-const recipes = [
-    { id: 1, title: "Some Recipe 1", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 4.5 },
-    { id: 2, title: "Some Recipe 2", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 2.5 },
-    { id: 3, title: "Some Recipe 3", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 4.0 },
-    { id: 4, title: "Some Recipe 4", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 4.5 },
-    { id: 5, title: "Some Recipe 5", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 4.5 },
-    { id: 6, title: "Some Recipe 6", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 2.5 },
-    { id: 7, title: "Some Recipe 7", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 4.0 },
-    { id: 8, title: "Some Recipe 8", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 4.5 },
-    { id: 9, title: "Some Recipe 9", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...", rating: 4.5 }
-]
+const recipesList = ref([])
+const loadingData = ref(true)
+const isListEmpty = computed(()=> recipesList.value?.length === 0)
+
+onMounted(async () => {
+    loadingData.value = true
+    recipesList.value = await getData("recipesList")
+    loadingData.value = false
+});
+
 </script>
 
 <style scoped>

@@ -142,5 +142,5 @@ app.use(history());
 app.use(staticEx(join(__dirname, "..", "frontend", "dist")));
 
 app.listen(process.env.PORT, process.env.HOST, () => {
-  console.log("server started on port 5000");
+  console.log(`server started on ${process.env.HOST}:${process.env.PORT}`);
 });

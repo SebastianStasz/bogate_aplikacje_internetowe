@@ -1,6 +1,6 @@
 <template>
   <div class="form-group">
-    <label :for="props.name"
+    <label v-if="props.label" :for="props.name"
       >{{ props.label }}
       <span class="star">{{ props.required ? "*" : "" }}</span></label
     >

@@ -2,12 +2,18 @@
   <div>Tutaj formularz listy</div>
   <button @click="addNewLine">nowa linijka</button>
   <div v-for="(el, index) in listValue">
-    <input v-model="listValue[index]" :key="index" />
+    <FormTextInput
+      :validate="isLengthValid(listValue[index], 3)"
+      :initialValue="listValue[index]"
+      @set-value="updateValue(index, $event)"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
+import FormTextInput from "./FormTextInput.vue";
+import { isLengthValid } from "../shared/functions/validators";
 
 const props = defineProps({
   initialValue: Object,
@@ -21,9 +27,12 @@ const emitChange = () => {
   emit("set-value", listValue.value);
 };
 
-const addNewLine = () => {
-  listValue.value.push("nowa linijka");
+const updateValue = (index, emitValue) => {
+  listValue.value[index] = emitValue;
+  emitChange();
 };
 
-watch(listValue, emitChange);
+const addNewLine = () => {
+  listValue.value.push("");
+};
 </script>

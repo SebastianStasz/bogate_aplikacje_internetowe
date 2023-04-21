@@ -3,7 +3,7 @@ import express, { static as staticEx } from "express";
 import cors from "cors";
 import path from "path";
 import history from "connect-history-api-fallback";
-import { db } from "./database.mjs";
+import { db } from "./database.js";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -12,7 +12,7 @@ import {
   validateEmail,
   validateRepeatedString,
   validatePostData,
-} from "./validators.mjs";
+} from "./validators.js";
 
 dotenv.config();
 const app = express();
@@ -66,7 +66,7 @@ app.post("/api/login", (req, res) => {
     }
     if (!row) return res.status(400).json("Niepoprawne dane");
     const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-    res.cookie("token", token, { httpOnly: true, secure: true });
+    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
     res.status(200).json("Pomyślnie zalogowano");
   });
 });
@@ -97,7 +97,7 @@ app.post("/api/signUp", (req, res) => {
             return res.status(400).json({ error: err.message });
           }
           const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-          res.cookie("token", token, { httpOnly: true, secure: true });
+          res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
           res.status(200).json("Pomyślnie zarejestrowano");
         }
       );
@@ -142,5 +142,5 @@ app.use(history());
 app.use(staticEx(join(__dirname, "..", "frontend", "dist")));
 
 app.listen(process.env.PORT, process.env.HOST, () => {
-  console.log("server started on port 5000");
+  console.log(`server started on ${process.env.HOST}:${process.env.PORT}`);
 });

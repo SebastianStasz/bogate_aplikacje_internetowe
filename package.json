@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "front": "vite dev frontend",
-    "server": "cd backend && node server.mjs",
+    "server": "cd backend && node server.js",
     "build": "vite build frontend",
     "preview": "vite preview",
     "dev": "concurrently \"npm run front\" \"npm run server\""

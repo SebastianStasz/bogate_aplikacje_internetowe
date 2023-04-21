@@ -3,7 +3,7 @@ import express, { static as staticEx } from "express";
 import cors from "cors";
 import path from "path";
 import history from "connect-history-api-fallback";
-import { db } from "./database.mjs";
+import { db } from "./database.js";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -12,7 +12,7 @@ import {
   validateEmail,
   validateRepeatedString,
   validatePostData,
-} from "./validators.mjs";
+} from "./validators.js";
 
 dotenv.config();
 const app = express();

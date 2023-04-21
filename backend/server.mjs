@@ -66,7 +66,7 @@ app.post("/api/login", (req, res) => {
     }
     if (!row) return res.status(400).json("Niepoprawne dane");
     const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-    res.cookie("token", token, { httpOnly: true, secure: true });
+    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
     res.status(200).json("Pomyślnie zalogowano");
   });
 });
@@ -97,7 +97,7 @@ app.post("/api/signUp", (req, res) => {
             return res.status(400).json({ error: err.message });
           }
           const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-          res.cookie("token", token, { httpOnly: true, secure: true });
+          res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
           res.status(200).json("Pomyślnie zarejestrowano");
         }
       );

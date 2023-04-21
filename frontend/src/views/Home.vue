@@ -1,5 +1,5 @@
 <template>
-  <RecipeList></RecipeList>
+  <recipe-list></recipe-list>
 </template>
 
 <script setup>

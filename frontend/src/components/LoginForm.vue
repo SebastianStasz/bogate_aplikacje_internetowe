@@ -64,8 +64,11 @@ function submitForm() {
 </script>
 
 <style scoped>
-body{
-  background-color: #242424;
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70%;
 }
 .login-form {
   display: flex;

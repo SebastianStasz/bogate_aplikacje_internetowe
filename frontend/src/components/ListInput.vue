@@ -1,7 +1,6 @@
 <template>
-  <div>Tutaj formularz listy</div>
   <button @click="addNewLine">nowa linijka</button>
-  <div v-for="(value, index) in listValue">
+  <div v-for="(value, index) in listValue" class="list-container">
     <OrderingArrows
       :listIndex="index"
       :maxIndex="listValue.length - 1"
@@ -13,6 +12,9 @@
       :initialValue="value"
       @set-value="updateValue(index, $event)"
     />
+    <button>
+      <v-icon icon="mdi-trash-can-outline" size="x-large"></v-icon>
+    </button>
   </div>
 </template>
 
@@ -52,3 +54,10 @@ const updateOrder = (curIndex, newIndex) => {
   emitChange();
 };
 </script>
+
+<style scoped>
+.list-container {
+  display: flex;
+  gap: 16px;
+}
+</style>

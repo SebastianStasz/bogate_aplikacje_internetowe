@@ -1,11 +1,19 @@
 <template>
-  <div>
-    <div v-if="showUpArrow" @click="reorderList(props.listIndex - 1)">
-      UP {{ props.listIndex }} {{ props.test }}
-    </div>
-    <div v-if="showDownArrow" @click="reorderList(props.listIndex + 1)">
-      DOWN {{ props.listIndex }} {{ props.test }}
-    </div>
+  <div class="container">
+    <button
+      v-if="showUpArrow"
+      @click="emit('change-order', props.listIndex - 1)"
+    >
+      <v-icon icon="mdi-arrow-up-bold-outline" size="x-large"></v-icon>
+    </button>
+    <div v-else class="placeholder"></div>
+    <button
+      v-if="showDownArrow"
+      @click="emit('change-order', props.listIndex + 1)"
+    >
+      <v-icon icon="mdi-arrow-down-bold-outline" size="x-large"></v-icon>
+    </button>
+    <div v-else class="placeholder"></div>
   </div>
 </template>
 
@@ -18,11 +26,19 @@ const props = defineProps({
 });
 const emit = defineEmits(["change-order"]);
 
-const reorderList = (newIndex) => {
-  emit("change-order", newIndex);
-};
 const showUpArrow = computed(() => !(props.listIndex === 0));
 const showDownArrow = computed(
   () => !(props.maxIndex === 0 || props.listIndex >= props.maxIndex)
 );
 </script>
+
+<style scoped>
+.container {
+  display: flex;
+  width: 72px;
+  gap: 8px;
+}
+.placeholder {
+  width: 32px;
+}
+</style>

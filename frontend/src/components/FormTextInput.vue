@@ -53,11 +53,11 @@ watch(textValue, emitChange);
 }
 
 .form-group {
+  width: 100%;
   margin-bottom: 10px;
 }
 
 label {
-  color: black;
   margin-left: 0.2rem;
   margin-top: 0.7rem;
   display: flex;

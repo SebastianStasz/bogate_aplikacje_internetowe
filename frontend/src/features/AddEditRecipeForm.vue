@@ -13,7 +13,7 @@
       :initialValue="formValues.ingredientList"
       @set-value="updateValue('ingredientList', $event)"
     ></list-input>
-    <button @click="parentLog">parent</button>
+    <button @click="parentLog">log current form values</button>
   </div>
 </template>
 
@@ -29,7 +29,11 @@ const props = defineProps({
 
 const formValues = reactive({
   description: props.initialData?.description ?? "",
-  ingredientList: props.initialData?.ingredientList ?? ["Pierwszy", "Drugi"],
+  ingredientList: props.initialData?.ingredientList ?? [
+    "Pierwszy",
+    "Drugi",
+    "Trzeci",
+  ],
 });
 
 const updateValue = (fieldName, emitValue) => {
@@ -37,7 +41,7 @@ const updateValue = (fieldName, emitValue) => {
 };
 
 const parentLog = () => {
-  console.log(formValues.description);
+  console.log(formValues.description, formValues.ingredientList);
 };
 </script>
 
@@ -45,11 +49,12 @@ const parentLog = () => {
 .container {
   display: flex;
   flex-direction: column;
-  width: 30rem;
+  width: 60%;
   margin: 0 auto;
   padding: 20px;
   background-color: #f2f2f2;
   border: 3px solid rgb(252, 72, 1);
+  color: black;
   border-radius: 13px;
 }
 

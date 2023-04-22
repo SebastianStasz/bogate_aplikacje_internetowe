@@ -21,5 +21,15 @@ export default createRouter({
       component: () => import('./views/MyRecipesPage.vue'),
       beforeEnter: authenticationGuard,
     },
+    {
+      path: "/addRecipe",
+      component: () => import('./views/AddRecipePage.vue'),
+      beforeEnter: authenticationGuard,
+    },
+    {
+      path: "/editRecipe",
+      component: () => import('./views/EditRecipePage.vue'),
+      beforeEnter: authenticationGuard,
+    },
   ],
 });

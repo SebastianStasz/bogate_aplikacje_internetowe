@@ -35,6 +35,8 @@ const drawer = ref(false)
 const menuItems = [
     { title: 'Strona główna', path: '/', icon: 'mdi-home' },
     { title: 'Moje przepisy', path: '/myRecipes', icon: 'mdi-home' },
+    { title: 'Dodaj przepis', path: '/addRecipe', icon: 'mdi-note-plus' },
+    { title: 'Edytuj przepis (temp)', path: '/editRecipe', icon: 'mdi-file-edit-outline' },
     { title: 'Zaloguj', path: '/logIn', icon: 'mdi-account' },
     { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-account-plus' }
 ]

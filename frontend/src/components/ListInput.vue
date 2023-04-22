@@ -1,10 +1,16 @@
 <template>
   <div>Tutaj formularz listy</div>
   <button @click="addNewLine">nowa linijka</button>
-  <div v-for="(el, index) in listValue">
+  <div v-for="(value, index) in listValue">
+    <OrderingArrows
+      :listIndex="index"
+      :maxIndex="listValue.length - 1"
+      @change-order="updateOrder(index, $event)"
+    />
     <FormTextInput
-      :validate="isLengthValid(listValue[index], 3)"
-      :initialValue="listValue[index]"
+      :key="listValue"
+      :validate="isLengthValid(value, 3)"
+      :initialValue="value"
       @set-value="updateValue(index, $event)"
     />
   </div>
@@ -14,6 +20,7 @@
 import { ref } from "vue";
 import FormTextInput from "./FormTextInput.vue";
 import { isLengthValid } from "../shared/functions/validators";
+import OrderingArrows from "./OrderingArrows.vue";
 
 const props = defineProps({
   initialValue: Object,
@@ -34,5 +41,14 @@ const updateValue = (index, emitValue) => {
 
 const addNewLine = () => {
   listValue.value.push("");
+};
+
+const updateOrder = (curIndex, newIndex) => {
+  var arrCopy = [...listValue.value];
+  arrCopy[curIndex] = listValue.value[newIndex];
+  arrCopy[newIndex] = listValue.value[curIndex];
+  listValue.value = [];
+  listValue.value.push(...arrCopy);
+  emitChange();
 };
 </script>

@@ -1,5 +1,4 @@
 <template>
-  <button @click="addNewLine">nowa linijka</button>
   <div v-for="(value, index) in listValue" class="list-container">
     <OrderingArrows
       :listIndex="index"
@@ -12,10 +11,14 @@
       :initialValue="value"
       @set-value="updateValue(index, $event)"
     />
-    <button>
+    <button v-if="listValue.length > 1" @click="deleteLine(index)">
       <v-icon icon="mdi-trash-can-outline" size="x-large"></v-icon>
     </button>
   </div>
+  <button @click="addNewLine">
+    <v-icon icon="mdi-plus-circle-outline" size="x-large"></v-icon> Dodaj nową
+    pozycję
+  </button>
 </template>
 
 <script setup>
@@ -43,6 +46,14 @@ const updateValue = (index, emitValue) => {
 
 const addNewLine = () => {
   listValue.value.push("");
+};
+
+const deleteLine = (index) => {
+  var arrCopy = [...listValue.value];
+  arrCopy.splice(index, 1);
+  listValue.value = [];
+  listValue.value.push(...arrCopy);
+  emitChange();
 };
 
 const updateOrder = (curIndex, newIndex) => {

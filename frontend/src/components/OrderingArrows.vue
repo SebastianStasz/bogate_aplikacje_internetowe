@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div v-if="props.maxIndex > 0" class="container">
     <button
       v-if="showUpArrow"
       @click="emit('change-order', props.listIndex - 1)"

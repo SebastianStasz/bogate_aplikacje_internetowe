@@ -38,6 +38,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { postData } from '../shared/functions/postData';
+import router from "../router";
 
 const login = ref("Przemek");
 const password = ref("pass123");
@@ -57,6 +58,11 @@ const isFormValid = computed(() => {
 function submitForm() {
   if (isFormValid.value) {
     postData({ login: login.value, password: password.value }, "login")
+      .then((result) => {
+        if (result.auth) router.replace('/');
+        return result;
+      })
+
   }
 }
 </script>

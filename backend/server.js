@@ -58,7 +58,7 @@ app.get("/api/authenticatePath", authenticateToken, (req, res) => {
 
 app.post("/api/login", (req, res) => {
   const loginData = req.body;
-  const sql = `select id from user WHERE (userName = '${loginData.login}' OR email = '${loginData.login}') AND password = '${loginData.password}'`;
+  const sql = `select id, userName from user WHERE (userName = '${loginData.login}' OR email = '${loginData.login}') AND password = '${loginData.password}'`;
   db.get(sql, [], (err, row) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -67,8 +67,13 @@ app.post("/api/login", (req, res) => {
     if (!row) return res.status(400).json("Niepoprawne dane");
     const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
     res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
-    res.status(200).json("Pomyślnie zalogowano");
+    res.status(200).json({auth: {user: row.userName}});
   });
+});
+
+app.post("/api/logout", (req, res) => {
+    res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "none" });
+    res.status(200).json("Wylogowano");
 });
 
 app.post("/api/signUp", (req, res) => {

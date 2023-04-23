@@ -6,6 +6,7 @@ export default createRouter({
   routes: [
     {
       path: "/",
+      name: "HomePage",
       component: () => import('./views/Home.vue'),
     },
     {

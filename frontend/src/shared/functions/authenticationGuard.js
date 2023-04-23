@@ -1,8 +1,7 @@
-import { getData } from "./getData";
+import Cookies from "js-cookie";
 
 export const authenticationGuard = async (to, from, next) => {
-  // Probably will change to simple token existance check later
-  const permitted = await getData("authenticatePath");
+  const permitted = Cookies.get("user")
   if (!permitted) {
     next({
       path: "/logIn",

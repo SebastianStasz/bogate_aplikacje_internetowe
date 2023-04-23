@@ -1,20 +1,17 @@
 <template>
-  <v-app class="content">
-    <navigation-bar></navigation-bar>
-    <Suspense>
-      <router-view></router-view>
-    </Suspense>
-    <footer-view></footer-view>
+  <v-app>
+    <page-header></page-header>
+    <v-main class="pa-0">
+      <page-main></page-main>
+      <page-footer></page-footer>
+    </v-main>
   </v-app>
 </template>
 
 <script setup>
-import NavigationBar from './components/NavigationBar.vue'
-import FooterView from './components/FooterView.vue';
+import PageHeader from './layout/PageHeader.vue'
+import PageFooter from './layout/PageFooter.vue'
+import PageMain from './layout/PageMain.vue'
 </script>
 
-<style scoped>
-.content {
-  background-color: #242424;
-}
-</style>
+<style></style>

@@ -1,5 +1,6 @@
 <template>
-    <div v-if="loadingData">Tu komponent pokazujący ładowanie</div>
+    <div class="container">
+    <div v-if="loadingData"><loading-indicator></loading-indicator></div>
     <div v-else class="wrapper">
         <div v-if="!isListEmpty" class="grid-list">
             <div v-for="recipe of recipesList" :key="recipe.id">
@@ -15,12 +16,14 @@
             ></v-pagination>
         </div>
     </div>
+</div>
 </template>
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import { getData } from '../shared/functions/getData';
 import RecipeCard from './RecipeCard.vue';
+import LoadingIndicator from './LoadingIndicator.vue';
 import { computed } from '@vue/reactivity';
 import { CONFIG } from '../shared/constants/config';
 
@@ -28,7 +31,7 @@ const recipesList = ref([])
 const loadingData = ref(true)
 const currentPage = ref(1)
 const recipesNumber = ref(6)
-const isListEmpty = computed(()=> recipesList.value?.length === 0)
+const isListEmpty = computed(() => recipesList.value?.length === 0)
 
 const getRecipes = async () => {
     loadingData.value = true
@@ -49,6 +52,12 @@ watch(currentPage, () => {
 </script>
 
 <style scoped>
+.container {
+    width: 100%;
+    padding-left: 6rem;
+    padding-right: 6rem;
+}
+
 .grid-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(390px, 390px));
@@ -56,13 +65,8 @@ watch(currentPage, () => {
     grid-gap: 90px;
     justify-content: center;
 }
+
 .pagination {
-    margin-top: 64px;
-    margin-bottom: 32px;
-}
-.wrapper {
-    background-color: #242424;
-    padding-left: 90px;
-    padding-right: 90px;
+    padding-top: 64px;
 }
 </style>

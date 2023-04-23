@@ -48,3 +48,13 @@ const menuItemsLoggedOut = [
     { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-account-plus' }
 ]
 </script>
+  
+<style>
+header {
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #242424;
+    color: #FF4A22;
+}
+</style>
+  

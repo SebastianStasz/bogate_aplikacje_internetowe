@@ -1,5 +1,4 @@
 <template>
-  <main>
     <form class="registration-form" @submit.prevent="submitForm">
       <h2>Zarejestruj się</h2>
       <div class="form-group">
@@ -59,8 +58,8 @@
         <span
           v-if="
             passwordRepeat &&
-            passwordRepeat.length > 0 &&
-            !isPasswordRepeatValid
+          passwordRepeat.length > 0 &&
+          !isPasswordRepeatValid
           "
           class="warning"
           >Hasła muszą być takie same!</span
@@ -70,7 +69,6 @@
         Zarejestruj się
       </button>
     </form>
-  </main>
 </template>
 
 <script setup>
@@ -115,12 +113,6 @@ function submitForm() {
 </script>
 
 <style scoped>
-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 80%;
-}
 .registration-form {
   display: flex;
   flex-direction: column;

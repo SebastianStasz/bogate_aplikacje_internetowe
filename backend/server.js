@@ -99,7 +99,7 @@ app.post("/api/signUp", (req, res) => {
           }
           const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
           res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
-          res.status(200).json("Pomyślnie zarejestrowano");
+          res.status(200).json({auth: {user: row.userName}});
         }
       );
     }

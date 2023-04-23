@@ -52,10 +52,6 @@ app.get("/api/getData", (req, res) => {
   });
 });
 
-app.get("/api/authenticatePath", authenticateToken, (req, res) => {
-  res.status(200).json(true);
-});
-
 app.post("/api/login", (req, res) => {
   const loginData = req.body;
   const sql = `select id, userName from user WHERE (userName = '${loginData.login}' OR email = '${loginData.login}') AND password = '${loginData.password}'`;

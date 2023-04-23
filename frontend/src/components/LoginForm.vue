@@ -1,8 +1,7 @@
 <template>
-  <main>
-    <form class="login-form" @submit.prevent="submitForm">
-      <h2>Zaloguj się</h2>
-      <div class="form-group">
+  <form class="login-form" @submit.prevent="submitForm">
+    <h2>Zaloguj się</h2>
+    <div class="form-group">
         <label for="login"
           >Nazwa użytkownika / Email<span class="star"> *</span></label
         >
@@ -15,9 +14,9 @@
         <span v-if="login && login.length > 0 && !isLoginValid" class="warning"
           >Nazwa musi być dłuższa od 3 znaków!</span
         >
-      </div>
-      <div class="form-group">
-        <label for="password">Hasło<span class="star"> *</span></label>
+    </div>
+    <div class="form-group">
+      <label for="password">Hasło<span class="star"> *</span></label>
         <input
           type="password"
           id="password"
@@ -29,17 +28,17 @@
           class="warning"
           >Hasło musi być dłuższe od 5 znaków!</span
         >
-      </div>
-      <button type="submit" class="submit-btn" :disabled="!isFormValid">
-        Zaloguj się
-      </button>
-    </form>
-  </main>
+    </div>
+    <button type="submit" class="submit-btn" :disabled="!isFormValid">
+      Zaloguj się
+    </button>
+  </form>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
 import { postData } from '../shared/functions/postData';
+import router from "../router";
 
 const login = ref("Przemek");
 const password = ref("pass123");
@@ -59,17 +58,16 @@ const isFormValid = computed(() => {
 function submitForm() {
   if (isFormValid.value) {
     postData({ login: login.value, password: password.value }, "login")
+      .then((result) => {
+        if (result.auth) router.replace('/');
+        return result;
+      })
+
   }
 }
 </script>
 
 <style scoped>
-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 70%;
-}
 .login-form {
   display: flex;
   flex-direction: column;

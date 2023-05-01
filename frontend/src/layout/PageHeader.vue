@@ -40,6 +40,7 @@ const menuItemsLoggedIn = [
     { title: 'Moje przepisy', path: '/myRecipes', icon: 'mdi-home' },
     { title: 'Dodaj przepis', path: '/addRecipe', icon: 'mdi-note-plus' },
     { title: 'Edytuj przepis (temp)', path: '/editRecipe', icon: 'mdi-file-edit-outline' },
+    { title: 'Details  (temp)', path: '/recipeDetails', icon: 'mdi-file-edit-outline' },
     { title: 'Wyloguj', path: '/', icon: 'mdi-account', onClick: logOutUser },
 ]
 const menuItemsLoggedOut = [

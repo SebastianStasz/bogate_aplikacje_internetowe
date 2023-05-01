@@ -14,15 +14,15 @@
             </div>
             <div class="details">
               <h4>Kategoria</h4>
-              <p>Ciasta</p>
+              <p>{{ data.category }}</p>
             </div>
             <div class="details">
               <h4>Czas przygotowania</h4>
-              <p>Wartość</p>
+              <p>{{ data.preparationTime }}</p>
             </div>
             <div class="details">
               <h4>Nazwa</h4>
-              <p>Wartość</p>
+              <p>{{ data.recipeName }}</p>
             </div>
           </div>
           <div class="ratings">
@@ -75,6 +75,10 @@ import { ref } from "vue";
 const data = reactive({
   userName: "Jan Nowak",
   title: "Tiramisu Cake",
+  recipeName: "Tiramisu",
+  preparationTime: "60 min",
+  category: "Ciasta",
+
   description:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id.",
   recipeName: "Tiramisu",
@@ -252,18 +256,18 @@ h4 {
     max-width: 28rem;
   }
 
-  h2{
+  h2 {
     margin: 0;
   }
-  
-  .recipe-info{
+
+  .recipe-info {
     margin: 0;
   }
-  .details:first-child{
+  .details:first-child {
     margin-left: 0;
   }
 
-  .edit-btn{
+  .edit-btn {
     margin-left: 0;
   }
   .rating:first-child {

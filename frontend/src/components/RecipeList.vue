@@ -63,7 +63,7 @@ watch(currentPage, () => {
 
 watch(props.searchParams, () => {
   console.log("searchParams", props.searchParams.value);
-  getRecipes();
+  currentPage.value = 1;
 });
 </script>
 

@@ -1,40 +1,52 @@
 <template>
-  <div class="search-container">
-    <FormTextInput
-      :name="'recipeName'"
-      :label="'Wyszukaj po nazwie'"
-      :placeholder="'Nazwa'"
-      :required="false"
-      :validate="isLengthValid(searchValues.recipeName, 3)"
-      @set-value="($event) => (searchValues.recipeName = $event)"
-    />
-    <FormTextInput
-      :name="'preparationTimeFrom'"
-      :label="'Czas przygotowania (od - do) min'"
-      :type="'number'"
-      :placeholder="'od'"
-      :required="false"
-      :validate="isPositiveNumber(searchValues.preparationTimeFrom)"
-      @set-value="($event) => (searchValues.preparationTimeFrom = $event)"
-    />
-    <FormTextInput
-      :name="'preparationTimeTo'"
-      :label="'&nbsp'"
-      :type="'number'"
-      :placeholder="'do'"
-      :required="false"
-      :validate="isPositiveNumber(searchValues.preparationTimeTo)"
-      @set-value="($event) => (searchValues.preparationTimeTo = $event)"
-    />
-    <FormTextInput
-      :name="'ingredients'"
-      :label="'Wyszukaj po składnikach'"
-      :placeholder="'pomidor, ryż'"
-      :required="false"
-      :validate="isLengthValid(searchValues.ingredients, 3)"
-      @set-value="($event) => (searchValues.ingredients = $event)"
-    />
-    <button @click="searchNow()">Szukaj</button>
+  <div>
+    <v-icon
+      v-if="!searchOpen"
+      icon="mdi-triangle-down-outline"
+      @click="searchOpen = !searchOpen"
+    ></v-icon>
+    <v-icon
+      v-else
+      icon="mdi-triangle-outline"
+      @click="searchOpen = !searchOpen"
+    ></v-icon>
+    <div v-if="searchOpen" class="search-container">
+      <FormTextInput
+        :name="'recipeName'"
+        :label="'Wyszukaj po nazwie'"
+        :placeholder="'Nazwa'"
+        :required="false"
+        :validate="isLengthValid(searchValues.recipeName, 3)"
+        @set-value="($event) => (searchValues.recipeName = $event)"
+      />
+      <FormTextInput
+        :name="'preparationTimeFrom'"
+        :label="'Czas przygotowania (od - do) min'"
+        :type="'number'"
+        :placeholder="'od'"
+        :required="false"
+        :validate="isPositiveNumber(searchValues.preparationTimeFrom)"
+        @set-value="($event) => (searchValues.preparationTimeFrom = $event)"
+      />
+      <FormTextInput
+        :name="'preparationTimeTo'"
+        :label="'&nbsp'"
+        :type="'number'"
+        :placeholder="'do'"
+        :required="false"
+        :validate="isPositiveNumber(searchValues.preparationTimeTo)"
+        @set-value="($event) => (searchValues.preparationTimeTo = $event)"
+      />
+      <FormTextInput
+        :name="'ingredients'"
+        :label="'Wyszukaj po składnikach'"
+        :placeholder="'pomidor, ryż'"
+        :required="false"
+        :validate="isLengthValid(searchValues.ingredients, 2)"
+        @set-value="($event) => (searchValues.ingredients = $event)"
+      />
+      <button @click="searchNow()">Szukaj</button>
+    </div>
   </div>
   <recipe-list :searchParams="sendSearchParams"></recipe-list>
 </template>
@@ -46,7 +58,7 @@ import {
   isLengthValid,
   isPositiveNumber,
 } from "../shared/functions/validators";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 
 const searchValues = reactive({
   recipeName: "",
@@ -54,6 +66,7 @@ const searchValues = reactive({
   preparationTimeTo: null,
   ingredients: "",
 });
+const searchOpen = ref(false);
 const sendSearchParams = reactive({});
 
 const searchNow = () => {
@@ -66,7 +79,7 @@ const searchNow = () => {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
-  width: 60%;
+  width: 80%;
   margin: 0 auto;
   padding: 20px;
   background-color: #f2f2f2;

@@ -143,8 +143,6 @@ app.post("/api/recipesList/:page", (req, res) => {
   );
   if (validate) return res.status(400).json(validate);
 
-
-
   const searchSql = [];
   recipeNameSearch &&
     searchSql.push(`recipe.recipeName LIKE '%${recipeNameSearch}%'`),
@@ -152,9 +150,15 @@ app.post("/api/recipesList/:page", (req, res) => {
       searchSql.push(`recipe.preparationTime >= ${preparationTimeFromSearch}`),
     preparationTimeToSearch &&
       searchSql.push(`recipe.preparationTime <= ${preparationTimeToSearch}`),
-    ingredientsSearch &&
-      searchSql.push(`recipe.ingredients LIKE '%${ingredientsSearch}%'`);
-
+    ingredientsSearch !== null &&
+      searchSql.push(
+        `(${ingredientsSearch
+          .replace(/\s/g, "")
+          .split(",")
+          .filter(Boolean)
+          .map((ingr) => `recipe.ingredients LIKE '%${ingr}%'`)
+          .join(" OR ")})`
+      );
   var sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
   if (searchSql.length > 0) sql += ` WHERE ${searchSql.join(" AND ")}`;
 
@@ -164,8 +168,6 @@ app.post("/api/recipesList/:page", (req, res) => {
       return;
     }
     res.status(200).json({
-      arr: [preparationTimeFromSearch, preparationTimeToSearch],
-      sql: sql,
       recipes: rows.slice(
         (currentPage - 1) * recipesPerPage,
         (currentPage - 1) * recipesPerPage + recipesPerPage

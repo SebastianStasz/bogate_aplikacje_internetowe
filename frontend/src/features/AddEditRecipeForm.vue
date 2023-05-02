@@ -1,18 +1,12 @@
 <template>
   <div class="container">
     <div>Tutaj formularz dodawania / edycji przepisów</div>
-    <FormTextInput
-      :name="'description'"
-      :label="'Opis przepisu'"
-      :placeholder="'Napisz coś'"
-      :validate="isLengthValid(formValues.description, 3)"
-      :initialValue="formValues.description"
-      @set-value="updateValue('description', $event)"
-    />
-    <list-input
-      :initialValue="formValues.ingredientList"
-      @set-value="updateValue('ingredientList', $event)"
-    ></list-input>
+    <FormTextInput :name="'description'" :label="'Opis przepisu'" :placeholder="'Napisz coś'"
+      :validate="isLengthValid(formValues.description, 3)" :initialValue="formValues.description"
+      @set-value="updateValue('description', $event)" />
+
+    <list-input :initialValue="formValues.ingredientList" @set-value="updateValue('ingredientList', $event)"></list-input>
+
     <button @click="parentLog">log current form values</button>
   </div>
 </template>

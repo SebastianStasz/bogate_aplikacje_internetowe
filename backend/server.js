@@ -12,6 +12,7 @@ import {
   validateEmail,
   validateRepeatedString,
   validatePostData,
+  validatePositiveNumber,
 } from "./validators.js";
 
 dotenv.config();
@@ -129,29 +130,41 @@ app.post("/api/recipesList/:page", (req, res) => {
   const recipesPerPage = 6;
 
   const recipeNameSearch = req.body.recipeName || null;
-  const preparationTimeSearch = req.body.preparationTime || null;
+  const preparationTimeFromSearch = req.body.preparationTimeFrom || null;
+  const preparationTimeToSearch = req.body.preparationTimeTo || null;
   const ingredientsSearch = req.body.ingredients || null;
   const currentPage = parseInt(req.params.page);
 
-  // validate ^them, especially those numbers
+  const validate = validatePostData(
+    validateStringLength(recipeNameSearch, 4, { nullable: true }),
+    validatePositiveNumber(preparationTimeFromSearch, { nullable: true }),
+    validatePositiveNumber(preparationTimeToSearch, { nullable: true }),
+    validateStringLength(ingredientsSearch, 3, { nullable: true })
+  );
+  if (validate) return res.status(400).json(validate);
+
+
 
   const searchSql = [];
   recipeNameSearch &&
     searchSql.push(`recipe.recipeName LIKE '%${recipeNameSearch}%'`),
-    preparationTimeSearch &&
-      searchSql.push(`recipe.preparationTime LIKE '%${preparationTimeSearch}%'`),
+    preparationTimeFromSearch &&
+      searchSql.push(`recipe.preparationTime >= ${preparationTimeFromSearch}`),
+    preparationTimeToSearch &&
+      searchSql.push(`recipe.preparationTime <= ${preparationTimeToSearch}`),
     ingredientsSearch &&
       searchSql.push(`recipe.ingredients LIKE '%${ingredientsSearch}%'`);
 
   var sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
   if (searchSql.length > 0) sql += ` WHERE ${searchSql.join(" AND ")}`;
-  
+
   db.all(sql, [], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
     }
     res.status(200).json({
+      arr: [preparationTimeFromSearch, preparationTimeToSearch],
       sql: sql,
       recipes: rows.slice(
         (currentPage - 1) * recipesPerPage,

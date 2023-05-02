@@ -1,4 +1,5 @@
-const validateStringLength = (text, setLength) => {
+const validateStringLength = (text, setLength, { nullable = false } = {}) => {
+  if (text === null && nullable) return false;
   if (text.trim().length < setLength)
     return `Tekst powinien mieć conajmniej ${setLength} znaki`;
   else return false;
@@ -10,6 +11,12 @@ const validateEmail = (email) => {
 };
 const validateRepeatedString = (text, repeated) => {
   if (text !== repeated) return "Powtórzone hasło musi być takie samo";
+  else return false;
+};
+const validatePositiveNumber = (value, { nullable = false } = {}) => {
+  if (value === null && nullable) return false;
+  if (typeof value !== "number" || value < 0)
+    return "Liczba musi być większa niż 0";
   else return false;
 };
 const validatePostData = (...validations) => {
@@ -25,5 +32,6 @@ export {
   validateStringLength,
   validateEmail,
   validateRepeatedString,
+  validatePositiveNumber,
   validatePostData,
 };

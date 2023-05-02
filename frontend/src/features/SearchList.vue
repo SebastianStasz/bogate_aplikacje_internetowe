@@ -3,18 +3,34 @@
     <FormTextInput
       :name="'recipeName'"
       :label="'Wyszukaj po nazwie'"
+      :placeholder="'Nazwa'"
+      :required="false"
       :validate="isLengthValid(searchValues.recipeName, 3)"
       @set-value="($event) => (searchValues.recipeName = $event)"
     />
     <FormTextInput
-      :name="'preparationTime'"
-      :label="'Czas przygotowania'"
-      :validate="isLengthValid(searchValues.preparationTime, 3)"
-      @set-value="($event) => (searchValues.preparationTime = $event)"
+      :name="'preparationTimeFrom'"
+      :label="'Czas przygotowania (od - do) min'"
+      :type="'number'"
+      :placeholder="'od'"
+      :required="false"
+      :validate="isPositiveNumber(searchValues.preparationTimeFrom)"
+      @set-value="($event) => (searchValues.preparationTimeFrom = $event)"
+    />
+    <FormTextInput
+      :name="'preparationTimeTo'"
+      :label="'&nbsp'"
+      :type="'number'"
+      :placeholder="'do'"
+      :required="false"
+      :validate="isPositiveNumber(searchValues.preparationTimeTo)"
+      @set-value="($event) => (searchValues.preparationTimeTo = $event)"
     />
     <FormTextInput
       :name="'ingredients'"
       :label="'Wyszukaj po składnikach'"
+      :placeholder="'pomidor, ryż'"
+      :required="false"
       :validate="isLengthValid(searchValues.ingredients, 3)"
       @set-value="($event) => (searchValues.ingredients = $event)"
     />
@@ -26,12 +42,16 @@
 <script setup>
 import RecipeList from "../components/RecipeList.vue";
 import FormTextInput from "../components/FormTextInput.vue";
-import { isLengthValid } from "../shared/functions/validators";
+import {
+  isLengthValid,
+  isPositiveNumber,
+} from "../shared/functions/validators";
 import { reactive } from "vue";
 
 const searchValues = reactive({
   recipeName: "",
-  preparationTime: "",
+  preparationTimeFrom: null,
+  preparationTimeTo: null,
   ingredients: "",
 });
 const sendSearchParams = reactive({});
@@ -43,7 +63,8 @@ const searchNow = () => {
 
 <style scoped>
 .search-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   width: 60%;
   margin: 0 auto;

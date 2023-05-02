@@ -36,9 +36,7 @@ const emitChange = () => {
 };
 
 const textIsValid = computed(() => {
-  return (
-    textValue.value && textValue.value.length > 0 && !props.validate.isValid
-  );
+  return textValue.value && !props.validate.isValid;
 });
 
 watch(textValue, emitChange);
@@ -60,6 +58,7 @@ label {
   margin-top: 0.7rem;
   display: flex;
   margin-bottom: 5px;
+  white-space: nowrap;
 }
 
 input {

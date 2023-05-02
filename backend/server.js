@@ -62,14 +62,18 @@ app.post("/api/login", (req, res) => {
     }
     if (!row) return res.status(400).json("Niepoprawne dane");
     const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
-    res.status(200).json({auth: {user: row.userName}});
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.status(200).json({ auth: { user: row.userName } });
   });
 });
 
 app.post("/api/logout", (req, res) => {
-    res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "none" });
-    res.status(200).json("Wylogowano");
+  res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "none" });
+  res.status(200).json("Wylogowano");
 });
 
 app.post("/api/signUp", (req, res) => {
@@ -98,8 +102,12 @@ app.post("/api/signUp", (req, res) => {
             return res.status(400).json({ error: err.message });
           }
           const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-          res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
-          res.status(200).json({auth: {user: row.userName}});
+          res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+          });
+          res.status(200).json({ auth: { user: row.userName } });
         }
       );
     }
@@ -119,22 +127,38 @@ app.get("/api/myRecipes", authenticateToken, (req, res) => {
 
 app.post("/api/recipesList/:page", (req, res) => {
   const recipesPerPage = 6;
+
+  const recipeNameSearch = req.body.recipeName || null;
+  const preparationTimeSearch = req.body.preparationTime || null;
+  const ingredientsSearch = req.body.ingredients || null;
   const currentPage = parseInt(req.params.page);
-  const sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
+
+  // validate ^them, especially those numbers
+
+  const searchSql = [];
+  recipeNameSearch &&
+    searchSql.push(`recipe.recipeName LIKE '%${recipeNameSearch}%'`),
+    preparationTimeSearch &&
+      searchSql.push(`recipe.preparationTime LIKE '%${preparationTimeSearch}%'`),
+    ingredientsSearch &&
+      searchSql.push(`recipe.ingredients LIKE '%${ingredientsSearch}%'`);
+
+  var sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
+  if (searchSql.length > 0) sql += ` WHERE ${searchSql.join(" AND ")}`;
+  
   db.all(sql, [], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
     }
-    res
-      .status(200)
-      .json({
-        recipes: rows.slice(
-          (currentPage - 1) * recipesPerPage,
-          (currentPage - 1) * recipesPerPage + recipesPerPage
-        ),
-        recipesNumber: rows.length,
-      });
+    res.status(200).json({
+      sql: sql,
+      recipes: rows.slice(
+        (currentPage - 1) * recipesPerPage,
+        (currentPage - 1) * recipesPerPage + recipesPerPage
+      ),
+      recipesNumber: rows.length,
+    });
   });
 });
 

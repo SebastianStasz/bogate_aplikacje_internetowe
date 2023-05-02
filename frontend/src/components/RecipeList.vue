@@ -44,7 +44,7 @@ const isListEmpty = computed(() => recipesList.value?.length === 0);
 const getRecipes = async () => {
   loadingData.value = true;
   const data = await postData(
-    props.searchParams,
+    props.searchParams.value,
     "recipesList",
     currentPage.value
   );

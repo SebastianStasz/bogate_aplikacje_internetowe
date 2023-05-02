@@ -13,10 +13,10 @@
       @set-value="($event) => (searchValues.preparationTime = $event)"
     />
     <FormTextInput
-      :name="'ingredient'"
+      :name="'ingredients'"
       :label="'Wyszukaj po składnikach'"
-      :validate="isLengthValid(searchValues.ingredient, 3)"
-      @set-value="($event) => (searchValues.ingredient = $event)"
+      :validate="isLengthValid(searchValues.ingredients, 3)"
+      @set-value="($event) => (searchValues.ingredients = $event)"
     />
     <button @click="searchNow()">Szukaj</button>
   </div>
@@ -32,7 +32,7 @@ import { reactive } from "vue";
 const searchValues = reactive({
   recipeName: "",
   preparationTime: "",
-  ingredient: "",
+  ingredients: "",
 });
 const sendSearchParams = reactive({});
 

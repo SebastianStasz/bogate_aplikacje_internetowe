@@ -61,7 +61,6 @@ label {
   margin-left: 0.2rem;
   margin-top: 0.7rem;
   display: flex;
-  margin-bottom: 5px;
 }
 
 input {

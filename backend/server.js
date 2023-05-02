@@ -117,7 +117,7 @@ app.get("/api/myRecipes", authenticateToken, (req, res) => {
   });
 });
 
-app.get("/api/recipesList/:page", (req, res) => {
+app.post("/api/recipesList/:page", (req, res) => {
   const recipesPerPage = 6;
   const currentPage = parseInt(req.params.page);
   const sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;

@@ -29,9 +29,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["set-value"]);
-const textValue = ref(
-  props.initialValue.length > 0 ? props.initialValue : [""]
-);
+const textValue = ref(props.initialValue ? props.initialValue : "");
 
 const emitChange = () => {
   emit("set-value", textValue.value);

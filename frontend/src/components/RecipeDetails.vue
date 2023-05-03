@@ -48,7 +48,18 @@
             </div>
           </div>
           <div class="buttons">
-            <button v-if="user" class="btn edit-btn">Edytuj przepis</button>
+            <button
+              v-if="user"
+              class="btn edit-btn"
+              @click="
+                router.push({
+                  name: 'editRecipe',
+                  params: { recipeId: data.id },
+                })
+              "
+            >
+              Edytuj przepis
+            </button>
             <button v-if="user" class="btn delete-btn">Usuń przepis</button>
           </div>
         </div>
@@ -72,8 +83,10 @@
 <script setup>
 import { reactive } from "@vue/reactivity";
 import useState from "../shared/store/useState";
+import router from "../router";
 const { user } = useState();
 const data = reactive({
+  id: 11,
   userName: "Jan Nowak",
   title: "Tiramisu Cake",
   recipeName: "Tiramisu",

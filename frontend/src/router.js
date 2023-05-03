@@ -28,12 +28,14 @@ export default createRouter({
       beforeEnter: authenticationGuard,
     },
     {
-      path: "/editRecipe",
+      path: "/editRecipe/:recipeId",
+      name: "editRecipe",
       component: () => import('./views/EditRecipePage.vue'),
       beforeEnter: authenticationGuard,
     },
     {
-      path: "/recipeDetails",
+      path: "/recipeDetails/:recipeId",
+      name: "recipeDetails",
       component: () => import('./views/RecipeDetailsPage.vue'),
     },
   ],

@@ -5,6 +5,7 @@
       <div v-if="!isListEmpty" class="grid-list">
         <div v-for="recipe of recipesList" :key="recipe.id">
           <RecipeCard
+            :recipeId="recipe.id"
             :title="recipe.title"
             :description="recipe.description"
             :rating="recipe.rating"

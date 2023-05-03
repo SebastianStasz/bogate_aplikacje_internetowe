@@ -29,18 +29,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["set-value"]);
-const textValue = ref(
-  props.initialValue.length > 0 ? props.initialValue : [""]
-);
+const textValue = ref(props.initialValue ? props.initialValue : "");
 
 const emitChange = () => {
   emit("set-value", textValue.value);
 };
 
 const textIsValid = computed(() => {
-  return (
-    textValue.value && textValue.value.length > 0 && !props.validate.isValid
-  );
+  return textValue.value && !props.validate.isValid;
 });
 
 watch(textValue, emitChange);
@@ -62,6 +58,7 @@ label {
   margin-top: 0.7rem;
   display: flex;
   margin-bottom: 5px;
+  white-space: nowrap;
 }
 
 input {

@@ -5,4 +5,11 @@ const isLengthValid = (text, length) => {
   };
 };
 
-export { isLengthValid };
+const isPositiveNumber = (value) => {
+  return {
+    isValid: typeof value === "number" && value >= 0,
+    message: `Podaj nieujemną liczbę całkowitą!`,
+  };
+};
+
+export { isLengthValid, isPositiveNumber };

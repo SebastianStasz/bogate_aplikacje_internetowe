@@ -32,6 +32,8 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
             description text,
             ingredients text,
             preparation text,
+            category text,
+            preparationTime number,
             createdAt integer,
             FOREIGN KEY(userId) REFERENCES user(id)
             )`,
@@ -75,7 +77,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
               ]);
 
               insert =
-                "INSERT INTO recipe (userId, recipeName, description, ingredients, preparation, createdAt) VALUES (?,?,?,?,?,?)";
+                "INSERT INTO recipe (userId, recipeName, description, ingredients, preparation, category, preparationTime, createdAt) VALUES (?,?,?,?,?,?,?,?)";
               for (var i = 0; i < 10; i++) {
                 db.run(insert, [
                   3,
@@ -83,22 +85,28 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                   "Opis potrawy Kopytka. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                   "Składniki Kopytka",
                   "Przygotowanie Kopytka",
+                  "Obiady",
+                  40,
                   "01.01.2023",
                 ]);
                 db.run(insert, [
                   2,
                   "Kotlet",
                   "Opis potrawy Kotlet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula.",
-                  "Składniki Kotlet",
+                  "Składniki Kotlet;pom;ryż",
                   "Przygotowanie Kotlet",
+                  "Obiady",
+                  80,
                   "02.02.2023",
                 ]);
                 db.run(insert, [
                   1,
                   "Sernik",
                   "Opis potrawy Sernik. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...",
-                  "Składniki Sernik",
+                  "Składniki Sernik;pom",
                   "Przygotowanie Sernik",
+                  "Ciasta",
+                  10,
                   "03.03.2023",
                 ]);
               }

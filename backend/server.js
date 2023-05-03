@@ -12,6 +12,7 @@ import {
   validateEmail,
   validateRepeatedString,
   validatePostData,
+  validatePositiveNumber,
 } from "./validators.js";
 
 dotenv.config();
@@ -62,14 +63,18 @@ app.post("/api/login", (req, res) => {
     }
     if (!row) return res.status(400).json("Niepoprawne dane");
     const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
-    res.status(200).json({auth: {user: row.userName}});
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.status(200).json({ auth: { user: row.userName } });
   });
 });
 
 app.post("/api/logout", (req, res) => {
-    res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "none" });
-    res.status(200).json("Wylogowano");
+  res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "none" });
+  res.status(200).json("Wylogowano");
 });
 
 app.post("/api/signUp", (req, res) => {
@@ -98,8 +103,12 @@ app.post("/api/signUp", (req, res) => {
             return res.status(400).json({ error: err.message });
           }
           const token = jwt.sign({ userId: row.id }, process.env.SECRET_KEY);
-          res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none" });
-          res.status(200).json({auth: {user: row.userName}});
+          res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+          });
+          res.status(200).json({ auth: { user: row.userName } });
         }
       );
     }
@@ -117,24 +126,54 @@ app.get("/api/myRecipes", authenticateToken, (req, res) => {
   });
 });
 
-app.get("/api/recipesList/:page", (req, res) => {
+app.post("/api/recipesList/:page", (req, res) => {
   const recipesPerPage = 6;
+
+  const recipeNameSearch = req.body.recipeName || null;
+  const preparationTimeFromSearch = req.body.preparationTimeFrom || null;
+  const preparationTimeToSearch = req.body.preparationTimeTo || null;
+  const ingredientsSearch = req.body.ingredients || null;
   const currentPage = parseInt(req.params.page);
-  const sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
+
+  const validate = validatePostData(
+    validateStringLength(recipeNameSearch, 4, { nullable: true }),
+    validatePositiveNumber(preparationTimeFromSearch, { nullable: true }),
+    validatePositiveNumber(preparationTimeToSearch, { nullable: true }),
+    validateStringLength(ingredientsSearch, 3, { nullable: true })
+  );
+  if (validate) return res.status(400).json(validate);
+
+  const searchSql = [];
+  recipeNameSearch &&
+    searchSql.push(`recipe.recipeName LIKE '%${recipeNameSearch}%'`),
+    preparationTimeFromSearch &&
+      searchSql.push(`recipe.preparationTime >= ${preparationTimeFromSearch}`),
+    preparationTimeToSearch &&
+      searchSql.push(`recipe.preparationTime <= ${preparationTimeToSearch}`),
+    ingredientsSearch !== null &&
+      searchSql.push(
+        `(${ingredientsSearch
+          .replace(/\s/g, "")
+          .split(",")
+          .filter(Boolean)
+          .map((ingr) => `recipe.ingredients LIKE '%${ingr}%'`)
+          .join(" OR ")})`
+      );
+  var sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
+  if (searchSql.length > 0) sql += ` WHERE ${searchSql.join(" AND ")}`;
+
   db.all(sql, [], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
     }
-    res
-      .status(200)
-      .json({
-        recipes: rows.slice(
-          (currentPage - 1) * recipesPerPage,
-          (currentPage - 1) * recipesPerPage + recipesPerPage
-        ),
-        recipesNumber: rows.length,
-      });
+    res.status(200).json({
+      recipes: rows.slice(
+        (currentPage - 1) * recipesPerPage,
+        (currentPage - 1) * recipesPerPage + recipesPerPage
+      ),
+      recipesNumber: rows.length,
+    });
   });
 });
 

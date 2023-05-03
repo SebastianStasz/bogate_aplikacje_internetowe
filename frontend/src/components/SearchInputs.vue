@@ -34,12 +34,13 @@
       :validate="isLengthValid(searchValues.ingredients, 2)"
       @set-value="($event) => (searchValues.ingredients = $event)"
     />
-    <button @click="emit('send-value', searchValues)">Szukaj</button>
+    <MainButton :title="'Szukaj'" @click="emit('send-value', searchValues)" />
   </div>
 </template>
 
 <script setup>
 import FormTextInput from "../components/FormTextInput.vue";
+import MainButton from "./MainButton.vue";
 import {
   isLengthValid,
   isPositiveNumber,
@@ -48,7 +49,7 @@ import {
 import { reactive } from "vue";
 
 const props = defineProps({
-    searchOpen: Boolean,
+  searchOpen: Boolean,
 });
 
 const searchValues = reactive({
@@ -66,7 +67,6 @@ const emit = defineEmits(["send-value"]);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
-  width: 80%;
   margin: 0 auto;
   padding: 20px;
   background-color: #f2f2f2;

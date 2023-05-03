@@ -62,7 +62,6 @@ watch(currentPage, () => {
 });
 
 watch(props.searchParams, () => {
-  console.log("searchParams", props.searchParams.value);
   if (currentPage.value === 1) getRecipes();
   else currentPage.value = 1;
 });

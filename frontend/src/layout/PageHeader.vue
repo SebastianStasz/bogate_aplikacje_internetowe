@@ -46,7 +46,9 @@ const menuItemsLoggedIn = [
 const menuItemsLoggedOut = [
     { title: 'Strona główna', path: '/', icon: 'mdi-home' },
     { title: 'Zaloguj', path: '/logIn', icon: 'mdi-account' },
-    { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-account-plus' }
+    { title: 'Zarejestruj', path: '/signUp', icon: 'mdi-account-plus' },
+    { title: 'Details  (temp)', path: '/recipeDetails', icon: 'mdi-file-edit-outline' },
+
 ]
 </script>
   

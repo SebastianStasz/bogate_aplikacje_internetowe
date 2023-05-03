@@ -28,28 +28,16 @@
           <div class="ratings">
             <div class="rating">
               <h4>Ocena ogólna</h4>
-              <span
-                ><v-rating
-                  v-model="data.rating"
-                  class="ma-0.5"
-                  density="compact"
-                ></v-rating
-              ></span>
+              <span><v-rating v-model="data.rating" class="ma-0.5" density="compact"></v-rating></span>
             </div>
             <div class="rating">
               <h4>Moja ocena</h4>
-              <span
-                ><v-rating
-                  v-model="data.myRating"
-                  class="ma-0.5"
-                  density="compact"
-                ></v-rating
-              ></span>
+              <span><v-rating v-model="data.myRating" class="ma-0.5" density="compact"></v-rating></span>
             </div>
           </div>
           <div class="buttons">
-            <button class="btn edit-btn">Edytuj przepis</button>
-            <button class="btn delete-btn">Usuń przepis</button>
+            <button v-if="user" class="btn edit-btn">Edytuj przepis</button>
+            <button v-if="user" class="btn delete-btn">Usuń przepis</button>
           </div>
         </div>
       </div>
@@ -57,12 +45,12 @@
         <h3>Opis</h3>
         <p>{{ data.description }}</p>
         <h3>Lista skladników</h3>
-        <li v-for="ingredient in ingredientsArray" :key="ingredient">
+        <li v-for="ingredient in data.ingredients" :key="ingredient">
           {{ ingredient }}
         </li>
         <h3>Przygotowanie</h3>
         <ol>
-          <li v-for="step in preparationArray" :key="step">{{ step }}</li>
+          <li v-for="step in data.preparation" :key="step">{{ step }}</li>
         </ol>
       </div>
     </div>
@@ -71,7 +59,10 @@
 
 <script setup>
 import { reactive } from "@vue/reactivity";
-import { ref } from "vue";
+import useState from '../shared/store/useState';
+
+const { user } = useState()
+
 const data = reactive({
   userName: "Jan Nowak",
   title: "Tiramisu Cake",
@@ -82,15 +73,24 @@ const data = reactive({
   description:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id.",
   recipeName: "Tiramisu",
-  ingredients: "Lorem, ipsum, dolor, sit, amet, consectetur, adipiscing, elit",
+  ingredients:
+    [
+      "Ogórek",
+      "Kurczak",
+      "Kot",
+      "Ser"
+    ],
   preparation:
-    "Lorem ipsum dolor, sit amet, consectetur adipiscing elit, At vero eos et accusamus",
+    [
+      "Pokrój ogórek",
+      "Umyj kurczak",
+      "Podsmaż kot",
+      "Zjedz ser"
+    ],
   rating: 2,
   myRating: 3,
 });
 
-const ingredientsArray = ref(data.ingredients.split(",").map((w) => w.trim()));
-const preparationArray = ref(data.preparation.split(",").map((w) => w.trim()));
 </script>
 
 <style scoped>
@@ -133,6 +133,7 @@ const preparationArray = ref(data.preparation.split(",").map((w) => w.trim()));
   border: 2px solid rgb(252, 72, 1);
   border-radius: 13px;
 }
+
 .general-info {
   margin-top: 1.2rem;
   display: flex;
@@ -221,6 +222,7 @@ h4 {
 .edit-btn {
   margin-left: 1rem;
 }
+
 .delete-btn {
   background-color: #ff4a2226;
   color: #ff4a22;
@@ -263,6 +265,7 @@ h4 {
   .recipe-info {
     margin: 0;
   }
+
   .details:first-child {
     margin-left: 0;
   }
@@ -270,6 +273,7 @@ h4 {
   .edit-btn {
     margin-left: 0;
   }
+
   .rating:first-child {
     margin-left: 0;
   }

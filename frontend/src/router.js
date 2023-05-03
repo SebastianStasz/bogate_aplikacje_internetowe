@@ -35,7 +35,6 @@ export default createRouter({
     {
       path: "/recipeDetails",
       component: () => import('./views/RecipeDetailsPage.vue'),
-      beforeEnter: authenticationGuard,
     },
   ],
 });

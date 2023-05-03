@@ -48,8 +48,8 @@
             </div>
           </div>
           <div class="buttons">
-            <button class="btn edit-btn">Edytuj przepis</button>
-            <button class="btn delete-btn">Usuń przepis</button>
+            <button v-if="user" class="btn edit-btn">Edytuj przepis</button>
+            <button v-if="user" class="btn delete-btn">Usuń przepis</button>
           </div>
         </div>
       </div>
@@ -57,12 +57,12 @@
         <h3>Opis</h3>
         <p>{{ data.description }}</p>
         <h3>Lista skladników</h3>
-        <li v-for="ingredient in ingredientsArray" :key="ingredient">
+        <li v-for="ingredient in data.ingredients" :key="ingredient">
           {{ ingredient }}
         </li>
         <h3>Przygotowanie</h3>
         <ol>
-          <li v-for="step in preparationArray" :key="step">{{ step }}</li>
+          <li v-for="step in data.preparation" :key="step">{{ step }}</li>
         </ol>
       </div>
     </div>
@@ -71,26 +71,22 @@
 
 <script setup>
 import { reactive } from "@vue/reactivity";
-import { ref } from "vue";
+import useState from "../shared/store/useState";
+const { user } = useState();
 const data = reactive({
   userName: "Jan Nowak",
   title: "Tiramisu Cake",
   recipeName: "Tiramisu",
   preparationTime: "60 min",
   category: "Ciasta",
-
   description:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id.",
   recipeName: "Tiramisu",
-  ingredients: "Lorem, ipsum, dolor, sit, amet, consectetur, adipiscing, elit",
-  preparation:
-    "Lorem ipsum dolor, sit amet, consectetur adipiscing elit, At vero eos et accusamus",
+  ingredients: ["Ogórek", "Kurczak", "Kot", "Ser"],
+  preparation: ["Pokrój ogórek", "Umyj kurczak", "Podsmaż kot", "Zjedz ser"],
   rating: 2,
   myRating: 3,
 });
-
-const ingredientsArray = ref(data.ingredients.split(",").map((w) => w.trim()));
-const preparationArray = ref(data.preparation.split(",").map((w) => w.trim()));
 </script>
 
 <style scoped>

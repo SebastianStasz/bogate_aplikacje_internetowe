@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <div class="recipe-content">
+    <div v-if="loadingData"><loading-indicator></loading-indicator></div>
+    <div v-else class="recipe-content">
       <div class="recipe-content-general">
         <div class="picture">
           <img src="https://picsum.photos/390/242?random=1" />
@@ -81,24 +82,37 @@
 </template>
 
 <script setup>
-import { reactive } from "@vue/reactivity";
+import { reactive, ref } from "@vue/reactivity";
+import { onMounted } from "vue";
 import useState from "../shared/store/useState";
 import router from "../router";
+import { useRoute } from "vue-router";
+import LoadingIndicator from "./LoadingIndicator.vue";
+import { getData } from "../shared/functions/getData";
+
 const { user } = useState();
-const data = reactive({
-  id: 11,
-  userName: "Jan Nowak",
-  title: "Tiramisu Cake",
-  recipeName: "Tiramisu",
-  preparationTime: "60 min",
-  category: "Ciasta",
-  description:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id.",
-  recipeName: "Tiramisu",
-  ingredients: ["Ogórek", "Kurczak", "Kot", "Ser"],
-  preparation: ["Pokrój ogórek", "Umyj kurczak", "Podsmaż kot", "Zjedz ser"],
-  rating: 2,
-  myRating: 3,
+const route = useRoute();
+const data = ref({
+  // id: 11,
+  // userName: "Jan Nowak",
+  // title: "Tiramisu Cake",
+  // recipeName: "Tiramisu",
+  // preparationTime: "60 min",
+  // category: "Ciasta",
+  // description:
+  //   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id.",
+  // recipeName: "Tiramisu",
+  // ingredients: ["Ogórek", "Kurczak", "Kot", "Ser"],
+  // preparation: ["Pokrój ogórek", "Umyj kurczak", "Podsmaż kot", "Zjedz ser"],
+  // rating: 2,
+  // myRating: 3,
+});
+const loadingData = ref(true);
+
+onMounted(async () => {
+  loadingData.value = true;
+  data.value = await getData("recipeDetails", route.params.recipeId);
+  loadingData.value = false;
 });
 </script>
 

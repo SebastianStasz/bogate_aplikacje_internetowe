@@ -14,6 +14,7 @@ import {
   validatePostData,
   validatePositiveNumber,
 } from "./validators.js";
+import { changeToList } from "./helperFunctions.js";
 
 dotenv.config();
 const app = express();
@@ -174,6 +175,23 @@ app.post("/api/recipesList/:page", (req, res) => {
       ),
       recipesNumber: rows.length,
     });
+  });
+});
+
+app.get("/api/recipeDetails/:recipeId", (req, res) => {
+  const sql = `select *, (select userName FROM user WHERE recipe.userId = user.id) AS userName, 
+  (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating,
+  (SELECT rating FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id AND recipe_rating.userId = recipe.userId) AS myRating
+  from recipe WHERE id = ${req.params.recipeId}`;
+
+  db.get(sql, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    rows.ingredients = changeToList(rows.ingredients);
+    rows.preparation = changeToList(rows.preparation);
+    res.status(200).json(rows);
   });
 });
 

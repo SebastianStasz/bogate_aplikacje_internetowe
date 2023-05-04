@@ -117,18 +117,7 @@ app.post("/api/signUp", (req, res) => {
   });
 });
 
-app.get("/api/myRecipes", authenticateToken, (req, res) => {
-  const sql = `select * from recipe WHERE userId = ${req.user.userId}`;
-  db.all(sql, [], (err, rows) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-      return;
-    }
-    res.status(200).json(rows);
-  });
-});
-
-app.post("/api/recipesList/:page", (req, res) => {
+app.post("/api/recipesList/:userName/:page", (req, res) => {
   const recipesPerPage = 6;
 
   const recipeNameSearch = req.body.recipeName || null;
@@ -161,12 +150,18 @@ app.post("/api/recipesList/:page", (req, res) => {
           .map((ingr) => `recipe.ingredients LIKE '%${ingr}%'`)
           .join(" OR ")})`
       );
-  var sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating from recipe`;
+  if (req.params.userName !== "all")
+    searchSql.push(`recipe.userId = searchUser`);
+
+  var sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
+  if (req.params.userName !== "all")
+    sql += `, (SELECT id from user WHERE userName LIKE '%${req.params.userName}%') AS searchUser`;
+  sql += " from recipe";
   if (searchSql.length > 0) sql += ` WHERE ${searchSql.join(" AND ")}`;
 
   db.all(sql, [], (err, rows) => {
     if (err) {
-      res.status(400).json({ error: err.message });
+      res.status(400).json({ error: err.message, sql: sql });
       return;
     }
     res.status(200).json({

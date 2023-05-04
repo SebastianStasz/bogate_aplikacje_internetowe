@@ -8,7 +8,15 @@
         <div class="recipe-info">
           <h2>{{ data.title }}</h2>
           <div class="general-info">
-            <div class="details">
+            <div
+              class="details"
+              @click="
+                router.push({
+                  name: 'userRecipes',
+                  params: { userName: data.userName },
+                })
+              "
+            >
               <h4>Autor</h4>
               <p>{{ data.userName }}</p>
             </div>
@@ -60,7 +68,9 @@
             >
               Edytuj przepis
             </button>
-            <button v-if="user === data.userName" class="btn delete-btn">Usuń przepis</button>
+            <button v-if="user === data.userName" class="btn delete-btn">
+              Usuń przepis
+            </button>
           </div>
         </div>
       </div>

@@ -30,12 +30,13 @@ import { postData } from "../shared/functions/postData";
 import RecipeCard from "./RecipeCard.vue";
 import LoadingIndicator from "./LoadingIndicator.vue";
 import { computed } from "@vue/reactivity";
+import { useRoute } from "vue-router";
 import { CONFIG } from "../shared/constants/config";
 
 const props = defineProps({
   searchParams: Object,
 });
-
+const route = useRoute();
 const recipesList = ref([]);
 const loadingData = ref(true);
 const currentPage = ref(1);
@@ -47,6 +48,7 @@ const getRecipes = async () => {
   const data = await postData(
     props.searchParams.value,
     "recipesList",
+    route.params.userName ? route.params.userName : "all",
     currentPage.value
   );
   recipesList.value = data.recipes;

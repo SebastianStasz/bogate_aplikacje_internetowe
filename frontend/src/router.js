@@ -18,9 +18,9 @@ export default createRouter({
       component: () => import('./views/SignUpPage.vue'),
     },
     {
-      path: "/myRecipes",
-      component: () => import('./views/MyRecipesPage.vue'),
-      beforeEnter: authenticationGuard,
+      path: "/userRecipes/:userName",
+      name: "userRecipes",
+      component: () => import('./views/UserRecipesPage.vue'),
     },
     {
       path: "/addRecipe",

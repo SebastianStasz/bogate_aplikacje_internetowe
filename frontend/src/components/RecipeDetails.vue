@@ -68,7 +68,11 @@
             >
               Edytuj przepis
             </button>
-            <button v-if="user === data.userName" class="btn delete-btn">
+            <button
+              v-if="user === data.userName"
+              class="btn delete-btn"
+              @click="deleteRecipe"
+            >
               Usuń przepis
             </button>
           </div>
@@ -94,6 +98,7 @@
 import { reactive } from "@vue/reactivity";
 import useState from "../shared/store/useState";
 import router from "../router";
+import { postData } from "../shared/functions/postData";
 
 const { user } = useState();
 const props = defineProps({
@@ -113,6 +118,17 @@ const data = reactive({
   rating: props.detailsData?.rating ?? null,
   myRating: props.detailsData?.myRating ?? null,
 });
+
+const deleteRecipe = () => {
+  postData({}, "deleteRecipe", data.id).then((result) => {
+    if (result)
+      router.push({
+        name: "userRecipes",
+        params: { userName: data.userName },
+      });
+    return result;
+  });
+};
 </script>
 
 <style scoped>

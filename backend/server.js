@@ -44,17 +44,6 @@ const authenticateToken = (req, res, next) => {
   } else res.sendStatus(401);
 };
 
-app.get("/api/getData", (req, res) => {
-  const sql = `select * from user`;
-  db.all(sql, [], (err, rows) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-      return;
-    }
-    res.status(200).json(rows);
-  });
-});
-
 app.post("/api/login", (req, res) => {
   const loginData = req.body;
   const sql = `select id, userName from user WHERE (userName = '${loginData.login}' OR email = '${loginData.login}') AND password = '${loginData.password}'`;
@@ -269,6 +258,28 @@ app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
       res.status(200).json("Success");
     }
   );
+});
+
+app.post("/api/deleteRecipe/:recipeId", authenticateToken, (req, res) => {
+  // Check if logged user is allowed to change this recipe
+  const sqlValidateUser = `select id from recipe WHERE userId = ${req.user.userId}`;
+  db.all(sqlValidateUser, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    var foundId = rows.some((el) => el.id == req.params.recipeId);
+    if (!foundId) res.sendStatus(401);
+  });
+
+  const sql = `DELETE FROM recipe WHERE id = ${req.params.recipeId}`;
+  db.run(sql, [], (err) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.status(200).json("Success");
+  });
 });
 
 // This needs to be after all /api/ routes

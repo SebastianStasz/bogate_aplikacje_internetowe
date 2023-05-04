@@ -46,8 +46,8 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
             userId INTEGER NOT NULL,
             recipeId INTEGER NOT NULL,
             rating REAL,
-            FOREIGN KEY(userId) REFERENCES user(id),
-            FOREIGN KEY(recipeId) REFERENCES recipe(id)
+            FOREIGN KEY(userId) REFERENCES user(id) ON DELETE CASCADE,
+            FOREIGN KEY(recipeId) REFERENCES recipe(id) ON DELETE CASCADE
             )`,
         (err) => {
           if (err) {

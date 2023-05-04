@@ -122,18 +122,16 @@ const data = reactive({
 });
 
 const deleteRecipe = () => {
-  postData({}, "deleteRecipe", data.id).then((result) => {
-    if (result)
-      router.push({
-        name: "userRecipes",
-        params: { userName: data.userName },
-      });
-    return result;
-  });
+  postData(
+    {},
+    { goTo: `/userRecipes/${data.userName}` },
+    "deleteRecipe",
+    data.id
+  );
 };
 
 const changeRating = () => {
-  postData({myRating: data.myRating}, "changeRating", data.id)
+  postData({ myRating: data.myRating }, {}, "changeRating", data.id);
 };
 </script>
 

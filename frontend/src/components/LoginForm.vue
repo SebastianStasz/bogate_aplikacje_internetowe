@@ -2,32 +2,32 @@
   <form class="login-form" @submit.prevent="submitForm">
     <h2>Zaloguj się</h2>
     <div class="form-group">
-        <label for="login"
-          >Nazwa użytkownika / Email<span class="star"> *</span></label
-        >
-        <input
-          v-model="login"
-          type="text"
-          id="login"
-          placeholder="Podaj nazwę użytkownika lub email"
-        />
-        <span v-if="login && login.length > 0 && !isLoginValid" class="warning"
-          >Nazwa musi być dłuższa od 3 znaków!</span
-        >
+      <label for="login"
+        >Nazwa użytkownika / Email<span class="star"> *</span></label
+      >
+      <input
+        v-model="login"
+        type="text"
+        id="login"
+        placeholder="Podaj nazwę użytkownika lub email"
+      />
+      <span v-if="login && login.length > 0 && !isLoginValid" class="warning"
+        >Nazwa musi być dłuższa od 3 znaków!</span
+      >
     </div>
     <div class="form-group">
       <label for="password">Hasło<span class="star"> *</span></label>
-        <input
-          type="password"
-          id="password"
-          placeholder="Wpisz hasło"
-          v-model="password"
-        />
-        <span
-          v-if="password && password.length > 0 && !isPasswordValid"
-          class="warning"
-          >Hasło musi być dłuższe od 5 znaków!</span
-        >
+      <input
+        type="password"
+        id="password"
+        placeholder="Wpisz hasło"
+        v-model="password"
+      />
+      <span
+        v-if="password && password.length > 0 && !isPasswordValid"
+        class="warning"
+        >Hasło musi być dłuższe od 5 znaków!</span
+      >
     </div>
     <button type="submit" class="submit-btn" :disabled="!isFormValid">
       Zaloguj się
@@ -37,8 +37,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { postData } from '../shared/functions/postData';
-import router from "../router";
+import { postData } from "../shared/functions/postData";
 
 const login = ref("Przemek");
 const password = ref("pass123");
@@ -57,12 +56,11 @@ const isFormValid = computed(() => {
 
 function submitForm() {
   if (isFormValid.value) {
-    postData({ login: login.value, password: password.value }, "login")
-      .then((result) => {
-        if (result.auth) router.replace('/');
-        return result;
-      })
-
+    postData(
+      { login: login.value, password: password.value },
+      { goTo: "/" },
+      "login"
+    );
   }
 }
 </script>

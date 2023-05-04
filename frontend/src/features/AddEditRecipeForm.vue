@@ -6,23 +6,45 @@
 
     <v-combobox label="Kategoria" :items="categories"></v-combobox>
 
-    <FormTextInput :name="'preparationTime'" :label="'Czas przygotowania'" :placeholder="'Czas przygotowania (minuty)'"
-      type="number" :validate="isPositiveNumber(formValues.preparationTime)" :initialValue="formValues.preparationTime"
-      @set-value="updateValue('preparationTime', $event)" />
+    <FormTextInput
+      :name="'preparationTime'"
+      :label="'Czas przygotowania'"
+      :placeholder="'Czas przygotowania (minuty)'"
+      type="number"
+      :validate="isPositiveNumber(formValues.preparationTime)"
+      :initialValue="formValues.preparationTime"
+      @set-value="updateValue('preparationTime', $event)"
+    />
 
-    <FormTextInput :name="'recipeName'" :label="'Nazwa przepisu'" :placeholder="'Nazwa'"
-      :validate="isLengthValid(formValues.recipeName, 3)" :initialValue="formValues.recipeName"
-      @set-value="updateValue('recipeName', $event)" />
+    <FormTextInput
+      :name="'recipeName'"
+      :label="'Nazwa przepisu'"
+      :placeholder="'Nazwa'"
+      :validate="isLengthValid(formValues.recipeName, 3)"
+      :initialValue="formValues.recipeName"
+      @set-value="updateValue('recipeName', $event)"
+    />
 
-    <FormTextInput :name="'description'" :label="'Opis przepisu'" :placeholder="'Napisz coś'"
-      :validate="isLengthValid(formValues.description, 3)" :initialValue="formValues.description"
-      @set-value="updateValue('description', $event)" />
+    <FormTextInput
+      :name="'description'"
+      :label="'Opis przepisu'"
+      :placeholder="'Napisz coś'"
+      :validate="isLengthValid(formValues.description, 3)"
+      :initialValue="formValues.description"
+      @set-value="updateValue('description', $event)"
+    />
 
     <h3>Składniki</h3>
-    <list-input :initialValue="formValues.ingredients" @set-value="updateValue('ingredients', $event)"></list-input>
+    <list-input
+      :initialValue="formValues.ingredients"
+      @set-value="updateValue('ingredients', $event)"
+    ></list-input>
 
     <h3>Przygotowanie</h3>
-    <list-input :initialValue="formValues.preparation" @set-value="updateValue('preparation', $event)"></list-input>
+    <list-input
+      :initialValue="formValues.preparation"
+      @set-value="updateValue('preparation', $event)"
+    ></list-input>
 
     <main-button @click="sendForm" title="Dodaj przepis"></main-button>
   </div>
@@ -32,16 +54,30 @@
 import { reactive } from "vue";
 import ListInput from "../components/ListInput.vue";
 import FormTextInput from "../components/FormTextInput.vue";
-import MainButton from '../components/MainButton.vue';
-import { isLengthValid, isPositiveNumber } from "../shared/functions/validators";
+import MainButton from "../components/MainButton.vue";
+import useState from "../shared/store/useState";
+import {
+  isLengthValid,
+  isPositiveNumber,
+} from "../shared/functions/validators";
 import { postData } from "../shared/functions/postData";
 
 const props = defineProps({
   initialData: Object,
   postUrl: String,
 });
-
-const categories = ["Przystawki i dania wegetariańskie", "Zupy i chłodniki", "Sałatki i dressingi", "Makarony i dania z ryżu", "Potrawy z mięsa i ryb", "Desery i wypieki", "Napoje i koktajle", "Śniadania i brunch", "Potrawy grillowane i smażone"]
+const { user } = useState();
+const categories = [
+  "Przystawki i dania wegetariańskie",
+  "Zupy i chłodniki",
+  "Sałatki i dressingi",
+  "Makarony i dania z ryżu",
+  "Potrawy z mięsa i ryb",
+  "Desery i wypieki",
+  "Napoje i koktajle",
+  "Śniadania i brunch",
+  "Potrawy grillowane i smażone",
+];
 
 const formValues = reactive({
   description: props.initialData?.description ?? "",
@@ -56,8 +92,7 @@ const updateValue = (fieldName, emitValue) => {
 };
 
 const sendForm = () => {
-  console.log(formValues);
-  postData(formValues, props.postUrl)
+  postData(formValues, { goTo: `/userRecipes/${user.value}` }, props.postUrl);
 };
 </script>
 

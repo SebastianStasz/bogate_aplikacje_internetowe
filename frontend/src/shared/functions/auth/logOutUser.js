@@ -6,7 +6,7 @@ import { postData } from "../postData";
 const { clearUser } = useState();
 
 const logOutUser = () => {
-  postData({}, "logout");
+  postData({}, {}, "logout");
   Cookies.remove("user", { path: "" });
   clearUser();
   router.push({ name: "HomePage" });

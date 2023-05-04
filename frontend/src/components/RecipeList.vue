@@ -6,7 +6,7 @@
         <div v-for="recipe of recipesList" :key="recipe.id">
           <RecipeCard
             :recipeId="recipe.id"
-            :title="recipe.title"
+            :title="recipe.recipeName"
             :description="recipe.description"
             :rating="recipe.rating"
           ></RecipeCard>
@@ -47,6 +47,7 @@ const getRecipes = async () => {
   loadingData.value = true;
   const data = await postData(
     props.searchParams.value,
+    {},
     "recipesList",
     route.params.userName ? route.params.userName : "all",
     currentPage.value

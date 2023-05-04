@@ -195,6 +195,29 @@ app.get("/api/recipeDetails/:recipeId", (req, res) => {
   });
 });
 
+app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
+// first check if logged user is allowed to change this recipe
+// also validate data first
+
+
+// description,
+// preparationTime,
+// recipeName,
+// preparation,
+// ingredients,
+  var newData = req.body;
+
+  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ? WHERE id = ${req.params.recipeId}`;
+  // make sure new data is correct
+  db.run(sql, Object.values(newData), (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.status(200).json(rows);
+  });
+});
+
 // This needs to be after all /api/ routes
 app.use(history());
 app.use(staticEx(join(__dirname, "..", "frontend", "dist")));

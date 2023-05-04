@@ -7,7 +7,7 @@
     />
     <FormTextInput
       :key="listValue"
-      :validate="isLengthValid(value, 3)"
+      :validate="isLengthValid(value, 2)"
       :initialValue="value"
       @set-value="updateValue(index, $event)"
     />

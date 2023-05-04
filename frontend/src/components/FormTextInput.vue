@@ -25,11 +25,11 @@ const props = defineProps({
   placeholder: String,
   required: { type: Boolean, default: true },
   validate: Object,
-  initialValue: String,
+  initialValue: { type: [String, Number] },
 });
 
 const emit = defineEmits(["set-value"]);
-const textValue = ref(props.initialValue ? props.initialValue : "");
+const textValue = ref(props.initialValue ? props.initialValue : null);
 
 const emitChange = () => {
   emit("set-value", textValue.value);

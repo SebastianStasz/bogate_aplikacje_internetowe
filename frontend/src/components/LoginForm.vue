@@ -6,12 +6,14 @@
         >Nazwa użytkownika / Email<span class="star"> *</span></label
       >
       <input
-        v-model="login"
+        v-model="formData.login"
         type="text"
         id="login"
         placeholder="Podaj nazwę użytkownika lub email"
       />
-      <span v-if="login && login.length > 0 && !isLoginValid" class="warning"
+      <span
+        v-if="formData.login && formData.login.length > 0 && !isLoginValid"
+        class="warning"
         >Nazwa musi być dłuższa od 3 znaków!</span
       >
     </div>
@@ -21,10 +23,12 @@
         type="password"
         id="password"
         placeholder="Wpisz hasło"
-        v-model="password"
+        v-model="formData.password"
       />
       <span
-        v-if="password && password.length > 0 && !isPasswordValid"
+        v-if="
+          formData.password && formData.password.length > 0 && !isPasswordValid
+        "
         class="warning"
         >Hasło musi być dłuższe od 5 znaków!</span
       >
@@ -36,18 +40,17 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { reactive, computed } from "vue";
 import { postData } from "../shared/functions/postData";
 
-const login = ref("Przemek");
-const password = ref("pass123");
+const formData = reactive({ login: "Przemek", password: "pass123" });
 
 const isPasswordValid = computed(() => {
-  return password.value.trim().length > 5;
+  return formData.password.trim().length > 5;
 });
 
 const isLoginValid = computed(() => {
-  return login.value.trim().length > 3;
+  return formData.login.trim().length > 3;
 });
 
 const isFormValid = computed(() => {
@@ -56,11 +59,7 @@ const isFormValid = computed(() => {
 
 function submitForm() {
   if (isFormValid.value) {
-    postData(
-      { login: login.value, password: password.value },
-      { goTo: "/" },
-      "login"
-    );
+    postData(formData, { goTo: "/" }, "login");
   }
 }
 </script>

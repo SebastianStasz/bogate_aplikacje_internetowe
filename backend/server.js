@@ -150,7 +150,7 @@ app.post("/api/recipesList/:userName/:page", (req, res) => {
 
   db.all(sql, [], (err, rows) => {
     if (err) {
-      res.status(400).json({ error: err.message, sql: sql });
+      res.status(400).json({ error: err.message });
       return;
     }
     res.status(200).json({
@@ -288,7 +288,6 @@ app.post("/api/deleteRecipe/:recipeId", authenticateToken, (req, res) => {
 
 app.post("/api/changeRating/:recipeId", authenticateToken, (req, res) => {
   const sql = `INSERT INTO recipe_rating (userId, recipeId, rating) VALUES (?,?,?) ON CONFLICT (userId, recipeId) DO UPDATE SET rating = excluded.rating;`;
-
   db.run(
     sql,
     [req.user.userId, req.params.recipeId, req.body.myRating],

@@ -42,10 +42,10 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
 
       db.run(
         `CREATE TABLE recipe_rating (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
             userId INTEGER NOT NULL,
             recipeId INTEGER NOT NULL,
             rating REAL,
+            PRIMARY KEY (userId, recipeId),
             FOREIGN KEY(userId) REFERENCES user(id) ON DELETE CASCADE,
             FOREIGN KEY(recipeId) REFERENCES recipe(id) ON DELETE CASCADE
             )`,

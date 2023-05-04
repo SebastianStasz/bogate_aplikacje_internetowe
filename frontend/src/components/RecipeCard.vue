@@ -12,6 +12,7 @@
             v-model="props.rating"
             class="ma-2"
             density="compact"
+            readonly
           ></v-rating
         ></span>
         <MainButton

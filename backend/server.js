@@ -164,10 +164,14 @@ app.post("/api/recipesList/:userName/:page", (req, res) => {
 });
 
 app.get("/api/recipeDetails/:recipeId", (req, res) => {
-  const sql = `select *, (select userName FROM user WHERE recipe.userId = user.id) AS userName, 
-  (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating,
-  (SELECT rating FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id AND recipe_rating.userId = recipe.userId) AS myRating
-  from recipe WHERE id = ${req.params.recipeId}`;
+  var sql = `select *, (select userName FROM user WHERE recipe.userId = user.id) AS userName, 
+  (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
+  const token = req.cookies.token;
+  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+    if (!err)
+      sql += `, (SELECT rating FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id AND recipe_rating.userId = ${user.userId}) AS myRating`;
+  });
+  sql += ` from recipe WHERE id = ${req.params.recipeId}`;
 
   db.get(sql, [], (err, rows) => {
     if (err) {
@@ -280,6 +284,22 @@ app.post("/api/deleteRecipe/:recipeId", authenticateToken, (req, res) => {
     }
     res.status(200).json("Success");
   });
+});
+
+app.post("/api/changeRating/:recipeId", authenticateToken, (req, res) => {
+  const sql = `INSERT INTO recipe_rating (userId, recipeId, rating) VALUES (?,?,?) ON CONFLICT (userId, recipeId) DO UPDATE SET rating = excluded.rating;`;
+
+  db.run(
+    sql,
+    [req.user.userId, req.params.recipeId, req.body.myRating],
+    (err) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.status(200).json("Success");
+    }
+  );
 });
 
 // This needs to be after all /api/ routes

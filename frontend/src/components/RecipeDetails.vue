@@ -41,16 +41,18 @@
                   v-model="data.rating"
                   class="ma-0.5"
                   density="compact"
+                  readonly
                 ></v-rating
               ></span>
             </div>
-            <div class="rating">
+            <div class="rating" v-if="user">
               <h4>Moja ocena</h4>
               <span
                 ><v-rating
                   v-model="data.myRating"
                   class="ma-0.5"
                   density="compact"
+                  @input="changeRating"
                 ></v-rating
               ></span>
             </div>
@@ -128,6 +130,10 @@ const deleteRecipe = () => {
       });
     return result;
   });
+};
+
+const changeRating = () => {
+  postData({myRating: data.myRating}, "changeRating", data.id)
 };
 </script>
 

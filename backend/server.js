@@ -196,6 +196,41 @@ app.get("/api/recipeDetails/:recipeId", (req, res) => {
   });
 });
 
+app.post("/api/addRecipe", authenticateToken, (req, res) => {
+  var newData = req.body;
+  const validate = validatePostData(
+    validateStringLength(newData.description, 3),
+    validatePositiveNumber(newData.preparationTime),
+    validateStringLength(newData.recipeName, 3),
+    validateIsCorrectArray(newData.preparation),
+    validateIsCorrectArray(newData.ingredients)
+  );
+  if (validate) return res.status(400).json(validate);
+
+  newData.preparation = changeFromList(newData.preparation);
+  newData.ingredients = changeFromList(newData.ingredients);
+
+  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients) VALUES (?,?,?,?,?,?)`;
+  db.run(
+    sql,
+    [
+      req.user.userId,
+      newData.description,
+      newData.preparationTime,
+      newData.recipeName,
+      newData.preparation,
+      newData.ingredients,
+    ],
+    (err) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.status(200).json("Success");
+    }
+  );
+});
+
 app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
   var newData = req.body;
   // Check if logged user is allowed to change this recipe
@@ -236,7 +271,7 @@ app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
         res.status(400).json({ error: err.message });
         return;
       }
-      res.status(200).json('Success');
+      res.status(200).json("Success");
     }
   );
 });

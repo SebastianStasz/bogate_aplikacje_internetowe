@@ -13,8 +13,9 @@ import {
   validateRepeatedString,
   validatePostData,
   validatePositiveNumber,
+  validateIsCorrectArray,
 } from "./validators.js";
-import { changeToList } from "./helperFunctions.js";
+import { changeToList, changeFromList } from "./helperFunctions.js";
 
 dotenv.config();
 const app = express();
@@ -196,26 +197,48 @@ app.get("/api/recipeDetails/:recipeId", (req, res) => {
 });
 
 app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
-// first check if logged user is allowed to change this recipe
-// also validate data first
-
-
-// description,
-// preparationTime,
-// recipeName,
-// preparation,
-// ingredients,
   var newData = req.body;
-
-  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ? WHERE id = ${req.params.recipeId}`;
-  // make sure new data is correct
-  db.run(sql, Object.values(newData), (err, rows) => {
+  // Check if logged user is allowed to change this recipe
+  const sqlValidateUser = `select id from recipe WHERE userId = ${req.user.userId}`;
+  db.all(sqlValidateUser, [], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
     }
-    res.status(200).json(rows);
+    var foundId = rows.some((el) => el.id == req.params.recipeId);
+    if (!foundId) res.sendStatus(401);
   });
+
+  const validate = validatePostData(
+    validateStringLength(newData.description, 3),
+    validatePositiveNumber(newData.preparationTime),
+    validateStringLength(newData.recipeName, 3),
+    validateIsCorrectArray(newData.preparation),
+    validateIsCorrectArray(newData.ingredients)
+  );
+  if (validate) return res.status(400).json(validate);
+
+  newData.preparation = changeFromList(newData.preparation);
+  newData.ingredients = changeFromList(newData.ingredients);
+
+  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ? WHERE id = ${req.params.recipeId}`;
+  db.run(
+    sql,
+    [
+      newData.description,
+      newData.preparationTime,
+      newData.recipeName,
+      newData.preparation,
+      newData.ingredients,
+    ],
+    (err) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.status(200).json('Success');
+    }
+  );
 });
 
 // This needs to be after all /api/ routes

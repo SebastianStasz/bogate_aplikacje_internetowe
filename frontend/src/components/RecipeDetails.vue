@@ -49,7 +49,7 @@
           </div>
           <div class="buttons">
             <button
-              v-if="user"
+              v-if="user === data.userName"
               class="btn edit-btn"
               @click="
                 router.push({
@@ -60,7 +60,7 @@
             >
               Edytuj przepis
             </button>
-            <button v-if="user" class="btn delete-btn">Usuń przepis</button>
+            <button v-if="user === data.userName" class="btn delete-btn">Usuń przepis</button>
           </div>
         </div>
       </div>
@@ -91,7 +91,7 @@ const props = defineProps({
 });
 
 const data = reactive({
-  id: 11,
+  id: props.detailsData?.id ?? null,
   userName: props.detailsData?.userName ?? "Nieznany autor",
   title: props.detailsData?.title ?? "Jaki tytuł, o co chodzi?",
   recipeName: props.detailsData?.recipeName ?? "Brak nazwy przepisu",

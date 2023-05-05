@@ -14,7 +14,6 @@ export const postData = (values, { goTo }, ...fetchUrl) => {
   })
     .then((res) => res.json())
     .then((result) => {
-      if (res.status === 400) return false;
       console.log("POST", result);
       if (result.auth) logInUser(result);
       if (goTo) router.push(goTo);

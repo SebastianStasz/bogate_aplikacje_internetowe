@@ -34,6 +34,11 @@
       :validate="isLengthValid(searchValues.ingredients, 2)"
       @set-value="($event) => (searchValues.ingredients = $event)"
     />
+    <v-combobox
+      v-model="searchValues.category"
+      label="Kategoria"
+      :items="allCategory"
+    ></v-combobox>
     <MainButton :title="'Szukaj'" @click="emit('send-value', searchValues)" />
   </div>
 </template>
@@ -45,18 +50,25 @@ import {
   isLengthValid,
   isPositiveNumber,
 } from "../shared/functions/validators";
-
-import { reactive } from "vue";
+import { reactive, ref, onMounted } from "vue";
+import { getData } from "../shared/functions/getData";
 
 const props = defineProps({
   searchOpen: Boolean,
 });
 
+const allCategory = ref([]);
 const searchValues = reactive({
   recipeName: "",
   preparationTimeFrom: null,
   preparationTimeTo: null,
   ingredients: "",
+  category: null,
+});
+
+onMounted(async () => {
+  var data = await getData("allCategories");
+  allCategory.value = data.allCategory;
 });
 
 const emit = defineEmits(["send-value"]);

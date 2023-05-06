@@ -125,20 +125,23 @@ app.post("/api/recipesList/:userName/:page", (req, res) => {
 
   const searchSql = [];
   recipeNameSearch &&
-    searchSql.push(`recipe.recipeName LIKE '%${recipeNameSearch}%'`),
-    preparationTimeFromSearch &&
-      searchSql.push(`recipe.preparationTime >= ${preparationTimeFromSearch}`),
-    preparationTimeToSearch &&
-      searchSql.push(`recipe.preparationTime <= ${preparationTimeToSearch}`),
-    ingredientsSearch !== null &&
-      searchSql.push(
-        `(${ingredientsSearch
-          .replace(/\s/g, "")
-          .split(",")
-          .filter(Boolean)
-          .map((ingr) => `recipe.ingredients LIKE '%${ingr}%'`)
-          .join(" OR ")})`
-      );
+    searchSql.push(`recipe.recipeName LIKE '%${recipeNameSearch}%'`);
+  preparationTimeFromSearch &&
+    searchSql.push(`recipe.preparationTime >= ${preparationTimeFromSearch}`);
+  preparationTimeToSearch &&
+    searchSql.push(`recipe.preparationTime <= ${preparationTimeToSearch}`);
+  ingredientsSearch !== null &&
+    searchSql.push(
+      `(${ingredientsSearch
+        .replace(/\s/g, "")
+        .split(",")
+        .filter(Boolean)
+        .map((ingr) => `recipe.ingredients LIKE '%${ingr}%'`)
+        .join(" OR ")})`
+    );
+  req.body.category &&
+    searchSql.push(`recipe.category LIKE '${req.body.category}'`);
+
   if (req.params.userName !== "all")
     searchSql.push(`recipe.userId = searchUser`);
 

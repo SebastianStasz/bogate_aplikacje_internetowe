@@ -4,7 +4,11 @@
 
     <v-file-input clearable label="Zdjęcie przepisu"></v-file-input>
 
-    <v-combobox label="Kategoria" :items="categories"></v-combobox>
+    <v-combobox
+      v-model="formValues.category"
+      label="Kategoria"
+      :items="allCategory"
+    ></v-combobox>
 
     <FormTextInput
       :name="'preparationTime'"
@@ -65,19 +69,9 @@ import { postData } from "../shared/functions/postData";
 const props = defineProps({
   initialData: Object,
   postUrl: String,
+  allCategory: Array,
 });
 const { user } = useState();
-const categories = [
-  "Przystawki i dania wegetariańskie",
-  "Zupy i chłodniki",
-  "Sałatki i dressingi",
-  "Makarony i dania z ryżu",
-  "Potrawy z mięsa i ryb",
-  "Desery i wypieki",
-  "Napoje i koktajle",
-  "Śniadania i brunch",
-  "Potrawy grillowane i smażone",
-];
 
 const formValues = reactive({
   description: props.initialData?.description ?? "",
@@ -85,6 +79,7 @@ const formValues = reactive({
   recipeName: props.initialData?.recipeName ?? "",
   preparation: props.initialData?.preparation ?? [],
   ingredients: props.initialData?.ingredients ?? [],
+  category: props.initialData?.category ?? null,
 });
 
 const updateValue = (fieldName, emitValue) => {

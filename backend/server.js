@@ -164,8 +164,9 @@ app.post("/api/recipesList/:userName/:page", (req, res) => {
 });
 
 app.get("/api/recipeDetails/:recipeId", (req, res) => {
-  var sql = `select *, (select userName FROM user WHERE recipe.userId = user.id) AS userName, 
-  (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
+  var sql = `select *, (select userName FROM user WHERE recipe.userId = user.id) AS userName,
+    (select GROUP_CONCAT(category,';') FROM recipe_category) AS allCategory,
+    (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
   const token = req.cookies.token;
   jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
     if (!err)
@@ -180,6 +181,7 @@ app.get("/api/recipeDetails/:recipeId", (req, res) => {
     }
     rows.ingredients = changeToList(rows.ingredients);
     rows.preparation = changeToList(rows.preparation);
+    rows.allCategory = changeToList(rows.allCategory);
     res.status(200).json(rows);
   });
 });
@@ -198,7 +200,7 @@ app.post("/api/addRecipe", authenticateToken, (req, res) => {
   newData.preparation = changeFromList(newData.preparation);
   newData.ingredients = changeFromList(newData.ingredients);
 
-  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients) VALUES (?,?,?,?,?,?)`;
+  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients, category) VALUES (?,?,?,?,?,?,?)`;
   db.run(
     sql,
     [
@@ -208,6 +210,7 @@ app.post("/api/addRecipe", authenticateToken, (req, res) => {
       newData.recipeName,
       newData.preparation,
       newData.ingredients,
+      newData.category,
     ],
     (err) => {
       if (err) {
@@ -244,7 +247,7 @@ app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
   newData.preparation = changeFromList(newData.preparation);
   newData.ingredients = changeFromList(newData.ingredients);
 
-  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ? WHERE id = ${req.params.recipeId}`;
+  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ?, category = ? WHERE id = ${req.params.recipeId}`;
   db.run(
     sql,
     [
@@ -253,6 +256,7 @@ app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
       newData.recipeName,
       newData.preparation,
       newData.ingredients,
+      newData.category,
     ],
     (err) => {
       if (err) {
@@ -299,6 +303,17 @@ app.post("/api/changeRating/:recipeId", authenticateToken, (req, res) => {
       res.status(200).json("Success");
     }
   );
+});
+
+app.get("/api/allCategories", (req, res) => {
+  const sql = `select GROUP_CONCAT(category,';') AS allCategory FROM recipe_category`;
+  db.get(sql, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.status(200).json({ allCategory: changeToList(rows.allCategory) });
+  });
 });
 
 // This needs to be after all /api/ routes

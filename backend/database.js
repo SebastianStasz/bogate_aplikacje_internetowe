@@ -25,30 +25,38 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
       );
 
       db.run(
+        `CREATE TABLE recipe_category (
+          category text PRIMARY KEY
+        )`,
+        (err) => {}
+      );
+
+      db.run(
         `CREATE TABLE recipe (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            userId INTEGER,
-            recipeName text,
-            description text,
-            ingredients text,
-            preparation text,
-            category text,
-            preparationTime number,
-            createdAt integer,
-            FOREIGN KEY(userId) REFERENCES user(id)
-            )`,
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          userId INTEGER,
+          recipeName text,
+          description text,
+          ingredients text,
+          preparation text,
+          category text,
+          preparationTime number,
+          createdAt integer,
+          FOREIGN KEY(userId) REFERENCES user(id)
+          FOREIGN KEY(category) REFERENCES recipe_category(category)
+          )`,
         (err) => {}
       );
 
       db.run(
         `CREATE TABLE recipe_rating (
-            userId INTEGER NOT NULL,
-            recipeId INTEGER NOT NULL,
-            rating REAL,
-            PRIMARY KEY (userId, recipeId),
-            FOREIGN KEY(userId) REFERENCES user(id) ON DELETE CASCADE,
-            FOREIGN KEY(recipeId) REFERENCES recipe(id) ON DELETE CASCADE
-            )`,
+          userId INTEGER NOT NULL,
+          recipeId INTEGER NOT NULL,
+          rating REAL,
+          PRIMARY KEY (userId, recipeId),
+          FOREIGN KEY(userId) REFERENCES user(id) ON DELETE CASCADE,
+          FOREIGN KEY(recipeId) REFERENCES recipe(id) ON DELETE CASCADE
+        )`,
         (err) => {
           if (err) {
             // Table already created
@@ -76,6 +84,17 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                 "24.03.2023",
               ]);
 
+              insert = "INSERT INTO recipe_category (category) VALUES (?)";
+              db.run(insert, ["Przystawki i dania wegetariańskie"]);
+              db.run(insert, ["Zupy i chłodniki"]);
+              db.run(insert, ["Sałatki i dressingi"]);
+              db.run(insert, ["Makarony i dania z ryżu"]);
+              db.run(insert, ["Potrawy z mięsa i ryb"]);
+              db.run(insert, ["Desery i wypieki"]);
+              db.run(insert, ["Napoje i koktajle"]);
+              db.run(insert, ["Śniadania i brunch"]);
+              db.run(insert, ["Potrawy grillowane i smażone"]);
+
               insert =
                 "INSERT INTO recipe (userId, recipeName, description, ingredients, preparation, category, preparationTime, createdAt) VALUES (?,?,?,?,?,?,?,?)";
               for (var i = 0; i < 10; i++) {
@@ -85,7 +104,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                   "Opis potrawy Kopytka. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                   "Składniki Kopytka;pomidor;sól",
                   "Przygotowanie Kopytka;Dodaj coś;Zrób coś",
-                  "Obiady",
+                  "Przystawki i dania wegetariańskie",
                   40,
                   "01.01.2023",
                 ]);
@@ -95,7 +114,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                   "Opis potrawy Kotlet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula.",
                   "Składniki Kotlet;pom;ryż",
                   "Przygotowanie Kotlet;Dodaj coś;Zrób coś",
-                  "Obiady",
+                  "Potrawy z mięsa i ryb",
                   80,
                   "02.02.2023",
                 ]);
@@ -105,7 +124,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                   "Opis potrawy Sernik. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu mauris et risus placerat tincidunt vitae in ligula. Morbi volutpat consequat dapibus...",
                   "Składniki Sernik;pom",
                   "Przygotowanie Sernik1;Dodaj coś;Zrób coś",
-                  "Ciasta",
+                  "Desery i wypieki",
                   10,
                   "03.03.2023",
                 ]);

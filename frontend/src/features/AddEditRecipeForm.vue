@@ -80,6 +80,7 @@ const formValues = reactive({
   preparation: props.initialData?.preparation ?? [],
   ingredients: props.initialData?.ingredients ?? [],
   category: props.initialData?.category ?? null,
+  photo: props.initialData?.photo ?? null,
 });
 
 const updateValue = (fieldName, emitValue) => {

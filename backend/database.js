@@ -41,6 +41,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
           preparation text,
           category text,
           preparationTime number,
+          photo text,
           createdAt integer,
           FOREIGN KEY(userId) REFERENCES user(id)
           FOREIGN KEY(category) REFERENCES recipe_category(category)
@@ -96,7 +97,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
               db.run(insert, ["Potrawy grillowane i smażone"]);
 
               insert =
-                "INSERT INTO recipe (userId, recipeName, description, ingredients, preparation, category, preparationTime, createdAt) VALUES (?,?,?,?,?,?,?,?)";
+                "INSERT INTO recipe (userId, recipeName, description, ingredients, preparation, category, preparationTime, photo, createdAt) VALUES (?,?,?,?,?,?,?,?,?)";
               for (var i = 0; i < 10; i++) {
                 db.run(insert, [
                   3,
@@ -106,6 +107,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                   "Przygotowanie Kopytka;Dodaj coś;Zrób coś",
                   "Przystawki i dania wegetariańskie",
                   40,
+                  null,
                   "01.01.2023",
                 ]);
                 db.run(insert, [
@@ -116,6 +118,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                   "Przygotowanie Kotlet;Dodaj coś;Zrób coś",
                   "Potrawy z mięsa i ryb",
                   80,
+                  null,
                   "02.02.2023",
                 ]);
                 db.run(insert, [
@@ -126,6 +129,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                   "Przygotowanie Sernik1;Dodaj coś;Zrób coś",
                   "Desery i wypieki",
                   10,
+                  null,
                   "03.03.2023",
                 ]);
               }

@@ -142,7 +142,7 @@ app.post("/api/recipesList/:userName/:page", (req, res) => {
   if (req.params.userName !== "all")
     searchSql.push(`recipe.userId = searchUser`);
 
-  var sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
+  var sql = `select recipe.id, recipe.recipeName, recipe.description, recipe.photo, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
   if (req.params.userName !== "all")
     sql += `, (SELECT id from user WHERE userName LIKE '%${req.params.userName}%') AS searchUser`;
   sql += " from recipe";
@@ -179,6 +179,8 @@ app.get("/api/recipeDetails/:recipeId", (req, res) => {
       res.status(400).json({ error: err.message });
       return;
     }
+    if (rows === undefined)
+      return res.status(404).json("Nie ma takiego przepisu");
     rows.ingredients = changeToList(rows.ingredients);
     rows.preparation = changeToList(rows.preparation);
     rows.allCategory = changeToList(rows.allCategory);
@@ -200,7 +202,7 @@ app.post("/api/addRecipe", authenticateToken, (req, res) => {
   newData.preparation = changeFromList(newData.preparation);
   newData.ingredients = changeFromList(newData.ingredients);
 
-  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients, category) VALUES (?,?,?,?,?,?,?)`;
+  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients, category, photo) VALUES (?,?,?,?,?,?,?,?)`;
   db.run(
     sql,
     [
@@ -211,6 +213,7 @@ app.post("/api/addRecipe", authenticateToken, (req, res) => {
       newData.preparation,
       newData.ingredients,
       newData.category,
+      newData.photo,
     ],
     (err) => {
       if (err) {
@@ -247,7 +250,7 @@ app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
   newData.preparation = changeFromList(newData.preparation);
   newData.ingredients = changeFromList(newData.ingredients);
 
-  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ?, category = ? WHERE id = ${req.params.recipeId}`;
+  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ?, category = ?, photo = ? WHERE id = ${req.params.recipeId}`;
   db.run(
     sql,
     [
@@ -257,6 +260,7 @@ app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
       newData.preparation,
       newData.ingredients,
       newData.category,
+      newData.photo,
     ],
     (err) => {
       if (err) {

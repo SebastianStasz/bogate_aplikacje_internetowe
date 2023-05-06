@@ -119,6 +119,7 @@ const data = reactive({
   preparation: props.detailsData?.preparation ?? ["Brak przygotowania"],
   rating: props.detailsData?.rating ?? null,
   myRating: props.detailsData?.myRating ?? null,
+  photo: props.initialData?.photo ?? null,
 });
 
 const deleteRecipe = () => {

@@ -2,7 +2,12 @@
   <div class="container">
     <h2>Dodaj przepis</h2>
 
-    <v-file-input clearable label="Zdjęcie przepisu"></v-file-input>
+    <v-file-input
+      accept="image/*"
+      clearable
+      label="Zdjęcie przepisu"
+      @change="handleFileUpload"
+    ></v-file-input>
 
     <v-combobox
       v-model="formValues.category"
@@ -89,6 +94,75 @@ const updateValue = (fieldName, emitValue) => {
 
 const sendForm = () => {
   postData(formValues, { goTo: `/userRecipes/${user.value}` }, props.postUrl);
+};
+
+const handleFileUpload = async (event) => {
+  const file = event.target.files[0];
+  const base64String = await compressAndConvertToBase64(file, 800, 600);
+  console.log(base64String);
+  formValues["photo"] = base64String;
+};
+
+const compressAndConvertToBase64 = (file, maxWidth, maxHeight) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+              const base64String = reader.result.split(",")[1];
+              resolve(base64String);
+            };
+
+            reader.onerror = () => {
+              reject(new Error("Failed to convert image to base64"));
+            };
+
+            reader.readAsDataURL(blob);
+          },
+          file.type || "image/jpeg",
+          0.5 // Adjust the compression quality if needed
+        );
+      };
+
+      img.src = event.target.result;
+    };
+
+    reader.onerror = () => {
+      reject(new Error("Failed to compress image"));
+    };
+
+    reader.readAsDataURL(file);
+  });
 };
 </script>
 

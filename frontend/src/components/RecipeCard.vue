@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <img src="https://picsum.photos/390/242?random=1" />
+    <img :src="decodedImage" />
     <div class="recipe-content">
       <div>
         <h4>{{ props.title }}</h4>
@@ -30,14 +30,30 @@
 </template>
 
 <script setup>
+import { ref, onMounted, watchEffect } from "vue";
 import MainButton from "./MainButton.vue";
 import router from "../router";
+
 const props = defineProps({
   recipeId: Number,
   title: String,
   description: String,
   rating: Number,
+  photo: String,
 });
+
+const decodedImage = ref("");
+
+const decodeImage = () => {
+  const img = new Image();
+  img.onload = () => {
+    decodedImage.value = img.src;
+  };
+  img.src = `data:image/png;base64, ${props.photo}`;
+};
+
+onMounted(() => decodeImage());
+watchEffect(() => decodeImage());
 </script>
 
 <style scoped>
@@ -96,5 +112,8 @@ img {
   display: block;
   border-top-left-radius: 4%;
   border-top-right-radius: 4%;
+  width: 100%;
+  height: 242px;
+  object-fit: cover;
 }
 </style>

@@ -9,6 +9,7 @@
             :title="recipe.recipeName"
             :description="recipe.description"
             :rating="recipe.rating"
+            :photo="recipe.photo"
           ></RecipeCard>
         </div>
       </div>

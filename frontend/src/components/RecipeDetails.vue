@@ -3,7 +3,7 @@
     <div class="recipe-content">
       <div class="recipe-content-general">
         <div class="picture">
-          <img src="https://picsum.photos/390/242?random=1" />
+          <img :src="decodedImage" />
         </div>
         <div class="recipe-info">
           <h2>{{ data.recipeName }}</h2>
@@ -97,6 +97,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted, watchEffect } from "vue";
 import { reactive } from "@vue/reactivity";
 import useState from "../shared/store/useState";
 import router from "../router";
@@ -133,6 +134,19 @@ const deleteRecipe = () => {
 const changeRating = () => {
   postData({ myRating: data.myRating }, {}, "changeRating", data.id);
 };
+
+const decodedImage = ref("");
+
+const decodeImage = () => {
+  const img = new Image();
+  img.onload = () => {
+    decodedImage.value = img.src;
+  };
+  img.src = `data:image/png;base64, ${props.detailsData.photo}`;
+};
+
+onMounted(() => decodeImage());
+watchEffect(() => decodeImage());
 </script>
 
 <style scoped>
@@ -186,9 +200,14 @@ const changeRating = () => {
 }
 
 img {
-  display: solid;
   border: 2px solid rgb(252, 72, 1);
   border-radius: 13px;
+  display: block;
+  border-top-left-radius: 4%;
+  border-top-right-radius: 4%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 h2,

@@ -1,6 +1,7 @@
 <template>
   <div v-if="props.searchOpen" class="search-container">
     <FormTextInput
+      ref="recipeNameInput"
       :name="'recipeName'"
       :label="'Wyszukaj po nazwie'"
       :placeholder="'Nazwa'"
@@ -9,6 +10,7 @@
       @set-value="($event) => (searchValues.recipeName = $event)"
     />
     <FormTextInput
+      ref="preparationTimeFromInput"
       :name="'preparationTimeFrom'"
       :label="'Czas przygotowania (od - do) min'"
       :type="'number'"
@@ -18,6 +20,7 @@
       @set-value="($event) => (searchValues.preparationTimeFrom = $event)"
     />
     <FormTextInput
+      ref="preparationTimeToInput"
       :name="'preparationTimeTo'"
       :label="'&nbsp'"
       :type="'number'"
@@ -27,6 +30,7 @@
       @set-value="($event) => (searchValues.preparationTimeTo = $event)"
     />
     <FormTextInput
+      ref="ingredientsInput"
       :name="'ingredients'"
       :label="'Wyszukaj po składnikach'"
       :placeholder="'pomidor, ryż'"
@@ -40,6 +44,7 @@
       :items="allCategory"
     ></v-combobox>
     <MainButton :title="'Szukaj'" @click="emit('send-value', searchValues)" />
+    <MainButton :title="'Resetuj'" @click="clearSearch" />
   </div>
 </template>
 
@@ -57,14 +62,15 @@ const props = defineProps({
   searchOpen: Boolean,
 });
 
-const allCategory = ref([]);
-const searchValues = reactive({
+const initialValues = {
   recipeName: "",
   preparationTimeFrom: null,
   preparationTimeTo: null,
   ingredients: "",
   category: null,
-});
+};
+const allCategory = ref([]);
+const searchValues = reactive({ ...initialValues });
 
 onMounted(async () => {
   var data = await getData("allCategories");
@@ -72,6 +78,20 @@ onMounted(async () => {
 });
 
 const emit = defineEmits(["send-value"]);
+
+const recipeNameInput = ref(null);
+const preparationTimeFromInput = ref(null);
+const preparationTimeToInput = ref(null);
+const ingredientsInput = ref(null);
+
+const clearSearch = () => {
+  emit("send-value", initialValues);
+  recipeNameInput.value.resetValue();
+  preparationTimeFromInput.value.resetValue();
+  preparationTimeToInput.value.resetValue();
+  ingredientsInput.value.resetValue();
+  searchValues.category = null;
+};
 </script>
 
 <style scoped>

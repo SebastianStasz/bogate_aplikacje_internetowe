@@ -12,7 +12,7 @@
           ></RecipeCard>
         </div>
       </div>
-      <div v-else>Brak przepisów</div>
+      <h2 v-else>Brak przepisów</h2>
       <div class="pagination">
         <v-pagination
           v-model="currentPage"
@@ -88,5 +88,10 @@ watch(props.searchParams, () => {
 
 .pagination {
   padding-top: 64px;
+}
+
+h2 {
+  text-align: center;
+  color: red;
 }
 </style>

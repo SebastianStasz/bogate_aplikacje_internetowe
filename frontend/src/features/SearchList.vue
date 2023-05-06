@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container">
     <div class="searchHeader">
-      <h1>Wyszukiwanie</h1>
+      <h2>Wyszukiwanie</h2>
       <v-icon
         v-if="!searchOpen"
         icon="mdi-triangle-down-outline"
@@ -33,8 +33,21 @@ const sendSearchParams = reactive({});
 </script>
 
 <style scoped>
+.container {
+  width: 100%;
+  padding: 0 12rem;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 1300px) {
+  .container {
+    padding: 0 2rem;
+  }
+}
+
 .searchHeader {
   display: flex;
   place-content: space-between;
+  margin-top: 1.5rem;
 }
 </style>

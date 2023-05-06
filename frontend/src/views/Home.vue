@@ -13,6 +13,7 @@ import SearchList from "../features/SearchList.vue";
 .homeContainer {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
 }
 </style>

@@ -1,48 +1,52 @@
 <template>
   <div v-if="props.searchOpen" class="search-container">
-    <FormTextInput
-      ref="recipeNameInput"
-      :name="'recipeName'"
-      :label="'Wyszukaj po nazwie'"
-      :placeholder="'Nazwa'"
-      :required="false"
-      :validate="isLengthValid(searchValues.recipeName, 3)"
-      @set-value="($event) => (searchValues.recipeName = $event)"
-    />
-    <FormTextInput
-      ref="preparationTimeFromInput"
-      :name="'preparationTimeFrom'"
-      :label="'Czas przygotowania (od - do) min'"
-      :type="'number'"
-      :placeholder="'od'"
-      :required="false"
-      :validate="isPositiveNumber(searchValues.preparationTimeFrom)"
-      @set-value="($event) => (searchValues.preparationTimeFrom = $event)"
-    />
-    <FormTextInput
-      ref="preparationTimeToInput"
-      :name="'preparationTimeTo'"
-      :label="'&nbsp'"
-      :type="'number'"
-      :placeholder="'do'"
-      :required="false"
-      :validate="isPositiveNumber(searchValues.preparationTimeTo)"
-      @set-value="($event) => (searchValues.preparationTimeTo = $event)"
-    />
-    <FormTextInput
-      ref="ingredientsInput"
-      :name="'ingredients'"
-      :label="'Wyszukaj po składnikach'"
-      :placeholder="'pomidor, ryż'"
-      :required="false"
-      :validate="isLengthValid(searchValues.ingredients, 2)"
-      @set-value="($event) => (searchValues.ingredients = $event)"
-    />
-    <v-combobox
-      v-model="searchValues.category"
-      label="Kategoria"
-      :items="allCategory"
-    ></v-combobox>
+    <div class="search-group">
+      <FormTextInput
+        ref="recipeNameInput"
+        :name="'recipeName'"
+        :label="'Wyszukaj po nazwie'"
+        :placeholder="'Nazwa'"
+        :required="false"
+        :validate="isLengthValid(searchValues.recipeName, 3)"
+        @set-value="($event) => (searchValues.recipeName = $event)"
+      />
+      <FormTextInput
+        ref="ingredientsInput"
+        :name="'ingredients'"
+        :label="'Wyszukaj po składnikach'"
+        :placeholder="'pomidor, ryż'"
+        :required="false"
+        :validate="isLengthValid(searchValues.ingredients, 2)"
+        @set-value="($event) => (searchValues.ingredients = $event)"
+      />
+    </div>
+    <div class="search-group">
+      <FormTextInput
+        ref="preparationTimeFromInput"
+        :name="'preparationTimeFrom'"
+        :label="'Czas przygotowania (od - do) min'"
+        :type="'number'"
+        :placeholder="'od'"
+        :required="false"
+        :validate="isPositiveNumber(searchValues.preparationTimeFrom)"
+        @set-value="($event) => (searchValues.preparationTimeFrom = $event)"
+      />
+      <FormTextInput
+        ref="preparationTimeToInput"
+        :name="'preparationTimeTo'"
+        :label="'&nbsp'"
+        :type="'number'"
+        :placeholder="'do'"
+        :required="false"
+        :validate="isPositiveNumber(searchValues.preparationTimeTo)"
+        @set-value="($event) => (searchValues.preparationTimeTo = $event)"
+      />
+      <v-combobox
+        v-model="searchValues.category"
+        label="Kategoria"
+        :items="allCategory"
+      ></v-combobox>
+    </div>
     <MainButton :title="'Szukaj'" @click="emit('send-value', searchValues)" />
     <MainButton :title="'Resetuj'" @click="clearSearch" />
   </div>
@@ -96,8 +100,8 @@ const clearSearch = () => {
 
 <style scoped>
 .search-container {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 16px;
   margin: 0 auto;
   padding: 20px;
@@ -105,5 +109,16 @@ const clearSearch = () => {
   border: 3px solid rgb(252, 72, 1);
   color: black;
   border-radius: 13px;
+}
+
+.search-group {
+  display: flex;
+  gap: 16px;
+}
+
+@media (max-width: 1000px) {
+  .search-group {
+    flex-direction: column;
+  }
 }
 </style>

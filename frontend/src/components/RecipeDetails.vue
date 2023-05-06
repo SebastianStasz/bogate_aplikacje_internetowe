@@ -316,4 +316,8 @@ h4 {
     margin-left: 0;
   }
 }
+
+h3 {
+  margin-top: 1rem;
+}
 </style>

@@ -1,6 +1,11 @@
 <template>
   <div v-if="loadingData"><loading-indicator></loading-indicator></div>
-  <add-edit-recipe-form v-else :initialData="data" :postUrl="`editRecipe/${route.params.recipeId}`" ></add-edit-recipe-form>
+  <add-edit-recipe-form
+    v-else
+    :initialData="data"
+    :allCategory="data.allCategory"
+    :postUrl="`editRecipe/${route.params.recipeId}`"
+  ></add-edit-recipe-form>
 </template>
 
 <script setup>

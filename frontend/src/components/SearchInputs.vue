@@ -2,6 +2,7 @@
   <div v-if="props.searchOpen" class="search-container">
     <div class="search-group">
       <FormTextInput
+        ref="recipeNameInput"
         :name="'recipeName'"
         :label="'Wyszukaj po nazwie'"
         :placeholder="'Nazwa'"
@@ -10,6 +11,7 @@
         @set-value="($event) => (searchValues.recipeName = $event)"
       />
       <FormTextInput
+        ref="ingredientsInput"
         :name="'ingredients'"
         :label="'Wyszukaj po składnikach'"
         :placeholder="'pomidor, ryż'"
@@ -20,6 +22,7 @@
     </div>
     <div class="search-group">
       <FormTextInput
+        ref="preparationTimeFromInput"
         :name="'preparationTimeFrom'"
         :label="'Czas przygotowania (od - do) min'"
         :type="'number'"
@@ -29,6 +32,7 @@
         @set-value="($event) => (searchValues.preparationTimeFrom = $event)"
       />
       <FormTextInput
+        ref="preparationTimeToInput"
         :name="'preparationTimeTo'"
         :label="'&nbsp'"
         :type="'number'"
@@ -38,7 +42,15 @@
         @set-value="($event) => (searchValues.preparationTimeTo = $event)"
       />
     </div>
+    <div class="search-group">
+      <v-combobox
+        v-model="searchValues.category"
+        label="Kategoria"
+        :items="allCategory"
+      ></v-combobox>
+    </div>
     <MainButton :title="'Szukaj'" @click="emit('send-value', searchValues)" />
+    <MainButton :title="'Resetuj'" @click="clearSearch" />
   </div>
 </template>
 
@@ -49,21 +61,43 @@ import {
   isLengthValid,
   isPositiveNumber,
 } from "../shared/functions/validators";
-
-import { reactive } from "vue";
+import { reactive, ref, onMounted } from "vue";
+import { getData } from "../shared/functions/getData";
 
 const props = defineProps({
   searchOpen: Boolean,
 });
 
-const searchValues = reactive({
+const initialValues = {
   recipeName: "",
   preparationTimeFrom: null,
   preparationTimeTo: null,
   ingredients: "",
+  category: null,
+};
+const allCategory = ref([]);
+const searchValues = reactive({ ...initialValues });
+
+onMounted(async () => {
+  var data = await getData("allCategories");
+  allCategory.value = data.allCategory;
 });
 
 const emit = defineEmits(["send-value"]);
+
+const recipeNameInput = ref(null);
+const preparationTimeFromInput = ref(null);
+const preparationTimeToInput = ref(null);
+const ingredientsInput = ref(null);
+
+const clearSearch = () => {
+  emit("send-value", initialValues);
+  recipeNameInput.value.resetValue();
+  preparationTimeFromInput.value.resetValue();
+  preparationTimeToInput.value.resetValue();
+  ingredientsInput.value.resetValue();
+  searchValues.category = null;
+};
 </script>
 
 <style scoped>

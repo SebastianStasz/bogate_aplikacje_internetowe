@@ -39,6 +39,14 @@ const textIsValid = computed(() => {
   return textValue.value && !props.validate.isValid;
 });
 
+const resetValue = () => {
+  if (typeof textValue.value === "string") textValue.value = "";
+  else textValue.value = null;
+};
+defineExpose({
+  resetValue,
+});
+
 watch(textValue, emitChange);
 </script>
 

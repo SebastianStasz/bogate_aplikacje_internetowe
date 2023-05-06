@@ -88,7 +88,12 @@ app.post("/api/signUp", (req, res) => {
       sql = `INSERT INTO user (email, password, userName, createdAt) VALUES (?,?,?,?) RETURNING id, userName;`;
       db.get(
         sql,
-        [newData.email, newData.password, newData.login, Date.now()],
+        [
+          newData.email,
+          newData.password,
+          newData.login,
+          new Date().toLocaleDateString("pl"),
+        ],
         (err, row) => {
           if (err) {
             return res.status(400).json({ error: err.message });
@@ -125,24 +130,27 @@ app.post("/api/recipesList/:userName/:page", (req, res) => {
 
   const searchSql = [];
   recipeNameSearch &&
-    searchSql.push(`recipe.recipeName LIKE '%${recipeNameSearch}%'`),
-    preparationTimeFromSearch &&
-      searchSql.push(`recipe.preparationTime >= ${preparationTimeFromSearch}`),
-    preparationTimeToSearch &&
-      searchSql.push(`recipe.preparationTime <= ${preparationTimeToSearch}`),
-    ingredientsSearch !== null &&
-      searchSql.push(
-        `(${ingredientsSearch
-          .replace(/\s/g, "")
-          .split(",")
-          .filter(Boolean)
-          .map((ingr) => `recipe.ingredients LIKE '%${ingr}%'`)
-          .join(" OR ")})`
-      );
+    searchSql.push(`recipe.recipeName LIKE '%${recipeNameSearch}%'`);
+  preparationTimeFromSearch &&
+    searchSql.push(`recipe.preparationTime >= ${preparationTimeFromSearch}`);
+  preparationTimeToSearch &&
+    searchSql.push(`recipe.preparationTime <= ${preparationTimeToSearch}`);
+  ingredientsSearch !== null &&
+    searchSql.push(
+      `(${ingredientsSearch
+        .replace(/\s/g, "")
+        .split(",")
+        .filter(Boolean)
+        .map((ingr) => `recipe.ingredients LIKE '%${ingr}%'`)
+        .join(" OR ")})`
+    );
+  req.body.category &&
+    searchSql.push(`recipe.category LIKE '${req.body.category}'`);
+
   if (req.params.userName !== "all")
     searchSql.push(`recipe.userId = searchUser`);
 
-  var sql = `select recipe.id, recipe.recipeName, recipe.description, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
+  var sql = `select recipe.id, recipe.recipeName, recipe.description, recipe.photo, (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
   if (req.params.userName !== "all")
     sql += `, (SELECT id from user WHERE userName LIKE '%${req.params.userName}%') AS searchUser`;
   sql += " from recipe";
@@ -164,8 +172,9 @@ app.post("/api/recipesList/:userName/:page", (req, res) => {
 });
 
 app.get("/api/recipeDetails/:recipeId", (req, res) => {
-  var sql = `select *, (select userName FROM user WHERE recipe.userId = user.id) AS userName, 
-  (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
+  var sql = `select *, (select userName FROM user WHERE recipe.userId = user.id) AS userName,
+    (select GROUP_CONCAT(category,';') FROM recipe_category) AS allCategory,
+    (SELECT AVG(rating) FROM recipe_rating WHERE recipe_rating.recipeId = recipe.id) AS rating`;
   const token = req.cookies.token;
   jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
     if (!err)
@@ -178,8 +187,11 @@ app.get("/api/recipeDetails/:recipeId", (req, res) => {
       res.status(400).json({ error: err.message });
       return;
     }
+    if (rows === undefined)
+      return res.status(404).json("Nie ma takiego przepisu");
     rows.ingredients = changeToList(rows.ingredients);
     rows.preparation = changeToList(rows.preparation);
+    rows.allCategory = changeToList(rows.allCategory);
     res.status(200).json(rows);
   });
 });
@@ -198,7 +210,7 @@ app.post("/api/addRecipe", authenticateToken, (req, res) => {
   newData.preparation = changeFromList(newData.preparation);
   newData.ingredients = changeFromList(newData.ingredients);
 
-  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients) VALUES (?,?,?,?,?,?)`;
+  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients, category, photo, createdAt) VALUES (?,?,?,?,?,?,?,?,?)`;
   db.run(
     sql,
     [
@@ -208,6 +220,9 @@ app.post("/api/addRecipe", authenticateToken, (req, res) => {
       newData.recipeName,
       newData.preparation,
       newData.ingredients,
+      newData.category,
+      newData.photo,
+      new Date().toLocaleDateString("pl"),
     ],
     (err) => {
       if (err) {
@@ -244,7 +259,7 @@ app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
   newData.preparation = changeFromList(newData.preparation);
   newData.ingredients = changeFromList(newData.ingredients);
 
-  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ? WHERE id = ${req.params.recipeId}`;
+  const sql = `UPDATE recipe SET description = ?, preparationTime = ?, recipeName = ?, preparation = ?, ingredients = ?, category = ?, photo = ? WHERE id = ${req.params.recipeId}`;
   db.run(
     sql,
     [
@@ -253,6 +268,8 @@ app.post("/api/editRecipe/:recipeId", authenticateToken, (req, res) => {
       newData.recipeName,
       newData.preparation,
       newData.ingredients,
+      newData.category,
+      newData.photo,
     ],
     (err) => {
       if (err) {
@@ -299,6 +316,17 @@ app.post("/api/changeRating/:recipeId", authenticateToken, (req, res) => {
       res.status(200).json("Success");
     }
   );
+});
+
+app.get("/api/allCategories", (req, res) => {
+  const sql = `select GROUP_CONCAT(category,';') AS allCategory FROM recipe_category`;
+  db.get(sql, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.status(200).json({ allCategory: changeToList(rows.allCategory) });
+  });
 });
 
 // This needs to be after all /api/ routes

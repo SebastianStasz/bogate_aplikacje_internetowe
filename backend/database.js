@@ -25,30 +25,39 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
       );
 
       db.run(
+        `CREATE TABLE recipe_category (
+          category text PRIMARY KEY
+        )`,
+        (err) => {}
+      );
+
+      db.run(
         `CREATE TABLE recipe (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            userId INTEGER,
-            recipeName text,
-            description text,
-            ingredients text,
-            preparation text,
-            category text,
-            preparationTime number,
-            createdAt integer,
-            FOREIGN KEY(userId) REFERENCES user(id)
-            )`,
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          userId INTEGER,
+          recipeName text,
+          description text,
+          ingredients text,
+          preparation text,
+          category text,
+          preparationTime number,
+          photo text,
+          createdAt integer,
+          FOREIGN KEY(userId) REFERENCES user(id)
+          FOREIGN KEY(category) REFERENCES recipe_category(category)
+          )`,
         (err) => {}
       );
 
       db.run(
         `CREATE TABLE recipe_rating (
-            userId INTEGER NOT NULL,
-            recipeId INTEGER NOT NULL,
-            rating REAL,
-            PRIMARY KEY (userId, recipeId),
-            FOREIGN KEY(userId) REFERENCES user(id) ON DELETE CASCADE,
-            FOREIGN KEY(recipeId) REFERENCES recipe(id) ON DELETE CASCADE
-            )`,
+          userId INTEGER NOT NULL,
+          recipeId INTEGER NOT NULL,
+          rating REAL,
+          PRIMARY KEY (userId, recipeId),
+          FOREIGN KEY(userId) REFERENCES user(id) ON DELETE CASCADE,
+          FOREIGN KEY(recipeId) REFERENCES recipe(id) ON DELETE CASCADE
+        )`,
         (err) => {
           if (err) {
             // Table already created
@@ -76,8 +85,19 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                 "24.03.2023",
               ]);
 
+              insert = "INSERT INTO recipe_category (category) VALUES (?)";
+              db.run(insert, ["Przystawki i dania wegetariańskie"]);
+              db.run(insert, ["Zupy i chłodniki"]);
+              db.run(insert, ["Sałatki i dressingi"]);
+              db.run(insert, ["Makarony i dania z ryżu"]);
+              db.run(insert, ["Potrawy z mięsa i ryb"]);
+              db.run(insert, ["Desery i wypieki"]);
+              db.run(insert, ["Napoje i koktajle"]);
+              db.run(insert, ["Śniadania i brunch"]);
+              db.run(insert, ["Potrawy grillowane i smażone"]);
+
               insert =
-                "INSERT INTO recipe (userId, recipeName, description, ingredients, preparation, category, preparationTime, createdAt) VALUES (?,?,?,?,?,?,?,?)";
+                "INSERT INTO recipe (userId, recipeName, description, ingredients, preparation, category, preparationTime, photo, createdAt) VALUES (?,?,?,?,?,?,?,?,?)";
               db.run(insert, [
                 3,
                 "Sałatka grecka z fetą",
@@ -86,6 +106,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                 "Przygotuj Sos sałatkowy grecki Knorr według przepisu na opakowaniu.;Pokrój ser w słupki lub kostkę i zalej połową uprzednio przygotowanego Sosu sałatkowego Knorr.;Porwij sałatę, ogórki pokrój w kostkę, pomidory w cząstki, paprykę w kostkę.;Dodaj oliwki, wymieszaj z sosem, który pozostał. Podawaj z pokrojonym w kostkę serem feta.",
                 "Sałatki i dressingi",
                 15,
+                null,
                 "01.01.2023",
               ]);
               db.run(insert, [
@@ -96,6 +117,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                 "Formę smarujemy masłem i wykładamy papierem do pieczenia. Na dnie układamy biszkopty.;Na biszkopty układamy pokrojone na kawałki banany.;Galaretki rozpuszczamy w gorącej wodzie, dokładnie mieszamy i zostawiamy do wystudzenia. Wlewamy na spód z biszkoptów. Wkładamy do lodówki na 1-2 h do stężenia.;Śmietanę kremówkę ubijamy na puszysty krem z cukrem pudrem i łyżką soku z cytryny. Dodajemy ser mascarpone oraz rozpuszczony w odrobinie gorącej wody żelatynę. Całość mieszamy.;Powstały krem przekładamy na stężałą galaretkę. Wyrównujemy z wierzchu. Ponownie wkładamy do lodówki na min 30 min.",
                 "Desery i wypieki",
                 30,
+                null,
                 "02.02.2023",
               ]);
               db.run(insert, [
@@ -106,6 +128,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                 "Żurawinę zalej wrzątkiem, gdy napęcznieje odsącz na sicie. Gruszki umyj, obierz, usuń gniazda nasienne i pokrój w plastry. Skrop sokiem z wyciśniętej cytryny.;Do kielicha miksera kuchennego przesiej mąkę, dodaj cukier, proszek do pieczenia i wymieszaj. Następnie dodaj miękkie masło, jajka i połącz składniki.;Ciasto przełóż do formy wysmarowanej masłem i oprószonej bułką tartą. Równo rozprowadź przy pomocy moczonej w zimnej wodzie łyżki.;Gruszki i żurawinę ułóż gęsto na wierzchu ciasta. Piekarnik nagrzej do 180 st. C.;Ciasto przykryj folią aluminiową. Piecz najpierw 30 minut pod przykryciem, a następnie odkryj i piecz jeszcze dodatkowo 30 minut.",
                 "Desery i wypieki",
                 45,
+                null,
                 "03.03.2023",
               ]);
               db.run(insert, [
@@ -116,6 +139,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                 "Dwie cebule pokrój w plastry, a trzecią a zetrzyj na tarce. Posiekaj natkę pietruszki.;Mięso mielone połącz z jajkiem, z 80g bułki tartej, z startą cebulą oraz natką pietruszki. Całość dopraw do smaku Przyprawą do mięsa mielonego Knorr, by danie było wyraziste w smaku.;Z gotowego farszu uformuj małe kulki, obtocz je w pozostałej bułce tartej, spłaszcz i usmaż z obu stron na rozgrzanym oleju.'Kotleciki przełóż na bok. Na patelnię wrzuć cebulę i smaż, aż delikatnie się zarumieni. Dodaj wtedy szklankę piwa. Powstały wywar wymieszaj ze śmietaną pomieszaną z jedną łyżką mąki. Na patelnię włóż kotleciki i duś je pod przykryciem przez ok. 5 minut.",
                 "Potrawy z mięsa i ryb",
                 60,
+                null,
                 "04.03.2023",
               ]);
               db.run(insert, [
@@ -126,6 +150,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                 "Tortellini ugotuj i pozostaw do wystygnięcia. Natkę posiekaj.;Brokuła podziel na różyczki, szynkę pokrój w paski, kukurydzę odsącz.;Przygotuj sos sałatkowy. Wymieszaj zawartość opakowania Knorr z majonezem i startym serem.;Połącz składniki z pierożkami tortellini.;Podawaj sałatkę udekorowaną natką pietruszki i grzankami.",
                 "Sałatki i dressingi",
                 45,
+                null,
                 "05.03.2023",
               ]);
               db.run(insert, [
@@ -136,6 +161,7 @@ export let db = new sqlite3.Database(DBSOURCE, (err) => {
                 "Wszystkie składniki na ciasto połącz ze sobą dobrze wyrabiając. Gotowe ciasto przykryj czystą, płócienną ścierką i odstaw na 40 minut w ciepłe miejsce tak, aby ciasto mogło wyrosnąć.;Po tym czasie ciasto jeszcze raz wyrób ręką, podsyp trochę mąką i podziel na 4 do 6 kul tej samej wielkości.;Na stolnicy lub gładkim blacie stołu delikatnie podsypanym mąką rozwałkuj lub rozciągnij ciasto ręką, formując okrągły placek. Placek ułóż na pergaminie na odwróconej do góry nogami blasze z piekarnika.;W garnku zagotuj pomidory pelatti z Knorr Naturalnie smaczne Spaghetti Bolognese - dzięki niemu uzyskasz sos o wyrazistym ziołowo pomidorowym smaku, który będzie miał idealną konsystencję.;Ciasto z wierzchu posmaruj wcześniej zrobionym sosem. Na środek pizzy, na sos, posyp stary sera mozzarella, na ser kolejno układaj plastry czerwonej cebuli, plastry kiełbasy oraz przecięte na pół pomidorki.;Pizzę umieść w nagrzanym do 220°C piekarniku i piecz około 25 minut. Gotową pizzę podawaj posypaną listkami rukoli i pozostałym sosem pomidorowym.",
                 "Potrawy z mięsa i ryb",
                 90,
+                null,
                 "06.03.2023",
               ]);
 

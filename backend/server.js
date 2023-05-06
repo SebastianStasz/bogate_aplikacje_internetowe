@@ -88,7 +88,12 @@ app.post("/api/signUp", (req, res) => {
       sql = `INSERT INTO user (email, password, userName, createdAt) VALUES (?,?,?,?) RETURNING id, userName;`;
       db.get(
         sql,
-        [newData.email, newData.password, newData.login, Date.now()],
+        [
+          newData.email,
+          newData.password,
+          newData.login,
+          new Date().toLocaleDateString("pl"),
+        ],
         (err, row) => {
           if (err) {
             return res.status(400).json({ error: err.message });
@@ -205,7 +210,7 @@ app.post("/api/addRecipe", authenticateToken, (req, res) => {
   newData.preparation = changeFromList(newData.preparation);
   newData.ingredients = changeFromList(newData.ingredients);
 
-  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients, category, photo) VALUES (?,?,?,?,?,?,?,?)`;
+  const sql = `INSERT INTO recipe (userId, description, preparationTime, recipeName, preparation, ingredients, category, photo, createdAt) VALUES (?,?,?,?,?,?,?,?,?)`;
   db.run(
     sql,
     [
@@ -217,6 +222,7 @@ app.post("/api/addRecipe", authenticateToken, (req, res) => {
       newData.ingredients,
       newData.category,
       newData.photo,
+      new Date().toLocaleDateString("pl"),
     ],
     (err) => {
       if (err) {

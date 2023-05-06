@@ -41,6 +41,8 @@
         :validate="isPositiveNumber(searchValues.preparationTimeTo)"
         @set-value="($event) => (searchValues.preparationTimeTo = $event)"
       />
+    </div>
+    <div class="search-group">
       <v-combobox
         v-model="searchValues.category"
         label="Kategoria"

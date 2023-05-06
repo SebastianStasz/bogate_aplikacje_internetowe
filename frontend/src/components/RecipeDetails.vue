@@ -6,7 +6,7 @@
           <img src="https://picsum.photos/390/242?random=1" />
         </div>
         <div class="recipe-info">
-          <h2>{{ data.title }}</h2>
+          <h2>{{ data.recipeName }}</h2>
           <div class="general-info">
             <div
               class="details"
@@ -110,7 +110,6 @@ const props = defineProps({
 const data = reactive({
   id: props.detailsData?.id ?? null,
   userName: props.detailsData?.userName ?? "Nieznany autor",
-  title: props.detailsData?.title ?? "Jaki tytuł, o co chodzi?",
   recipeName: props.detailsData?.recipeName ?? "Brak nazwy przepisu",
   preparationTime: props.detailsData?.preparationTime ?? "Nieznany",
   category: props.detailsData?.category ?? "Brak kategori",
@@ -287,6 +286,7 @@ h4 {
 
 .recipe-content-details ol li {
   margin-left: 1rem;
+  margin-top: 10px;
 }
 
 @media (max-width: 960px) {

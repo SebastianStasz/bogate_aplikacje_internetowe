@@ -12,9 +12,9 @@ const isPositiveNumber = (value) => {
   };
 };
 
-const isNotEmptyArray = (arr) => {
+const isNotEmptyArray = (arr, strLength) => {
   return {
-    isValid: arr.length > 0 && arr[0].trim() != "",
+    isValid: arr.length > 0 && !arr.some((el) => el.length < strLength),
   };
 };
 

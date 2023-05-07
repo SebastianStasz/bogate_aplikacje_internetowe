@@ -6,7 +6,9 @@
       accept="image/*"
       clearable
       label="Zdjęcie przepisu"
+      :error-messages="isPhotoValid || !photoClicked ? '' : 'Dodaj zdjęcie'"
       @change="handleFileUpload"
+      @click:clear="formValues.photo = null"
     ></v-file-input>
 
     <v-combobox
@@ -67,7 +69,7 @@
 </template>
 
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, ref, computed } from "vue";
 import ListInput from "../components/ListInput.vue";
 import FormTextInput from "../components/FormTextInput.vue";
 import MainButton from "../components/MainButton.vue";
@@ -85,6 +87,7 @@ const props = defineProps({
   allCategory: Array,
 });
 const { user } = useState();
+const photoClicked = ref(false);
 
 const formValues = reactive({
   description: props.initialData?.description ?? "",
@@ -97,21 +100,22 @@ const formValues = reactive({
 });
 
 const updateValue = (fieldName, emitValue) => {
-  formValues[fieldName] = emitValue;
+  if (Array.isArray(emitValue)) {
+    formValues[fieldName] = [];
+    formValues[fieldName].push(...emitValue);
+  } else formValues[fieldName] = emitValue;
 };
 
 const isPhotoValid = computed(() => {
-  return formValues.photo != null;
+  return formValues.photo !== null && formValues.photo !== "";
 });
 
-// const isCategoryValid = computed(() => {
-//   return allCategory.includes(formValues.category)
-// });
+const isCategoryValid = computed(() => {
+  return props.allCategory.includes(formValues.category);
+});
 
 const isPreparationTimeValid = computed(() => {
-  return (
-    formValues.preparationTime != undefined && formValues.preparationTime > 0
-  );
+  return isPositiveNumber(formValues.preparationTime).isValid;
 });
 
 const isNameValid = computed(() => {
@@ -123,22 +127,22 @@ const isDescriptionValid = computed(() => {
 });
 
 const isIngredientsValid = computed(() => {
-  return isNotEmptyArray(formValues.ingredients).isValid;
+  return isNotEmptyArray(formValues.ingredients, 3).isValid;
 });
 
 const isPreparationValid = computed(() => {
-  return isNotEmptyArray(formValues.preparation).isValid;
+  return isNotEmptyArray(formValues.preparation, 3).isValid;
 });
 
 const isFormValid = computed(() => {
   return (
-    isPreparationTimeValid &&
+    isPreparationTimeValid.value &&
     isNameValid.value &&
     isDescriptionValid.value &&
     isIngredientsValid.value &&
     isPreparationValid.value &&
-    isPhotoValid.value
-    //  && isCategoryValid.value
+    isPhotoValid.value &&
+    isCategoryValid.value
   );
 });
 
@@ -147,6 +151,7 @@ const sendForm = () => {
 };
 
 const handleFileUpload = async (event) => {
+  photoClicked.value = true;
   const file = event.target.files[0];
   const base64String = await compressAndConvertToBase64(file, 800, 600);
   console.log(base64String);

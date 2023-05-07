@@ -46,6 +46,7 @@ const updateValue = (index, emitValue) => {
 
 const addNewLine = () => {
   listValue.value.push("");
+  emitChange();
 };
 
 const deleteLine = (index) => {

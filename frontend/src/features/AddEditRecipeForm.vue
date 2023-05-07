@@ -37,7 +37,7 @@
     <FormTextInput
       :name="'description'"
       :label="'Opis przepisu'"
-      :placeholder="'Napisz coś'"
+      :placeholder="'Napisz coś o przepisie'"
       :validate="isLengthValid(formValues.description, 3)"
       :initialValue="formValues.description"
       @set-value="updateValue('description', $event)"
@@ -55,12 +55,19 @@
       @set-value="updateValue('preparation', $event)"
     ></list-input>
 
-    <main-button @click="sendForm" title="Dodaj przepis"></main-button>
+    <main-button
+      @click="sendForm"
+      title="Dodaj przepis"
+      :is-disabled="!isFormValid"
+    ></main-button>
+    <p v-if="!isFormValid" class="warning">
+      Upewnij się że wszystkie pola są wypełnione!
+    </p>
   </div>
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 import ListInput from "../components/ListInput.vue";
 import FormTextInput from "../components/FormTextInput.vue";
 import MainButton from "../components/MainButton.vue";
@@ -68,6 +75,7 @@ import useState from "../shared/store/useState";
 import {
   isLengthValid,
   isPositiveNumber,
+  isNotEmptyArray,
 } from "../shared/functions/validators";
 import { postData } from "../shared/functions/postData";
 
@@ -91,6 +99,48 @@ const formValues = reactive({
 const updateValue = (fieldName, emitValue) => {
   formValues[fieldName] = emitValue;
 };
+
+const isPhotoValid = computed(() => {
+  return formValues.photo != null;
+});
+
+// const isCategoryValid = computed(() => {
+//   return allCategory.includes(formValues.category)
+// });
+
+const isPreparationTimeValid = computed(() => {
+  return (
+    formValues.preparationTime != undefined && formValues.preparationTime > 0
+  );
+});
+
+const isNameValid = computed(() => {
+  return isLengthValid(formValues.recipeName, 3).isValid;
+});
+
+const isDescriptionValid = computed(() => {
+  return isLengthValid(formValues.description, 3).isValid;
+});
+
+const isIngredientsValid = computed(() => {
+  return isNotEmptyArray(formValues.ingredients).isValid;
+});
+
+const isPreparationValid = computed(() => {
+  return isNotEmptyArray(formValues.preparation).isValid;
+});
+
+const isFormValid = computed(() => {
+  return (
+    isPreparationTimeValid &&
+    isNameValid.value &&
+    isDescriptionValid.value &&
+    isIngredientsValid.value &&
+    isPreparationValid.value &&
+    isPhotoValid.value
+    //  && isCategoryValid.value
+  );
+});
 
 const sendForm = () => {
   postData(formValues, { goTo: `/userRecipes/${user.value}` }, props.postUrl);
@@ -185,6 +235,12 @@ h2 {
 
 h3 {
   margin-top: 1rem;
+}
+
+.warning {
+  color: rgb(217, 27, 27);
+  margin-top: 0.4rem;
+  font-size: 13px;
 }
 
 @media (max-width: 768px) {

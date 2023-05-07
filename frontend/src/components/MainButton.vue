@@ -1,10 +1,11 @@
 <template>
-    <button>{{ title }}</button>
+    <button :disabled="isDisabled">{{ title }}</button>
 </template>
 
 <script setup>
 const props = defineProps({
-    title: String
+    title: String,
+    isDisabled: Boolean
 })
 </script>
 
@@ -52,5 +53,13 @@ button:active {
     background-color: #c85000;
     box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
     transform: translateY(0);
+}
+
+button:disabled {
+  background-color: gray;
+}
+
+button:disabled:hover {
+  cursor: not-allowed;
 }
 </style>

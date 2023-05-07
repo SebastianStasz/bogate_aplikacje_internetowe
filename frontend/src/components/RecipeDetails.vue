@@ -28,16 +28,13 @@
               <h4>Czas przygotowania</h4>
               <p>{{ data.preparationTime }}</p>
             </div>
-            <div class="details">
-              <h4>Nazwa</h4>
-              <p>{{ data.recipeName }}</p>
-            </div>
           </div>
-          <div class="ratings">
+          <div :class="{ 'ratings-centered' : !user, 'ratings' : user}">
             <div class="rating">
               <h4>Ocena ogólna</h4>
               <span
                 ><v-rating
+                  size="22"
                   v-model="data.rating"
                   class="ma-0.5"
                   density="compact"
@@ -49,8 +46,9 @@
               <h4>Moja ocena</h4>
               <span
                 ><v-rating
+                  size="22"
                   v-model="data.myRating"
-                  class="ma-0.5"
+                  class="ma-0.5 js"
                   density="compact"
                   @input="changeRating"
                 ></v-rating
@@ -173,6 +171,7 @@ watchEffect(() => decodeImage());
 }
 
 .recipe-info {
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -188,6 +187,12 @@ watchEffect(() => decodeImage());
   background-color: rgb(227, 224, 224);
   border: 2px solid rgb(252, 72, 1);
   border-radius: 13px;
+  text-align: center;
+}
+
+.details:first-child:hover{
+  background-color: rgb(223, 181, 181);
+  cursor: pointer;
 }
 .general-info {
   margin-top: 1.2rem;
@@ -232,16 +237,23 @@ h4 {
 
 .ratings {
   width: 100%;
-  margin-top: 1.8rem;
+  margin-top: 3.8rem;
   display: flex;
   flex-direction: row;
+}
+
+.ratings-centered{
+  margin-top: 3.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2.6rem;
 }
 
 .rating {
   display: flex;
   flex-direction: column;
   align-items: center;
-  align-self: stretch;
   border: 2px solid rgb(252, 72, 1);
   border-radius: 13px;
   background-color: rgb(227, 224, 224);
@@ -252,18 +264,18 @@ h4 {
   margin-left: 1rem;
 }
 
-.ratings span {
+.ratings span, .ratings-centered span {
   color: #eea10c;
 }
 
-.ratings h4 {
+.ratings h4, .ratings-centered h4 {
   margin-top: 0.4rem;
 }
 
 .buttons {
   width: 100%;
   display: flex;
-  margin-top: 1rem;
+  margin-top: 3rem;
 }
 
 .btn {
@@ -320,6 +332,7 @@ h4 {
 
   h2 {
     margin: 0;
+    margin-top: 1.2rem;
   }
 
   .recipe-info {
@@ -332,9 +345,20 @@ h4 {
   .edit-btn {
     margin-left: 0;
   }
+  .ratings{
+    max-width: 250px;
+    margin-top: 2rem;
+  }
   .rating:first-child {
     margin-left: 0;
   }
+  .buttons{
+    margin-top: 1rem;
+  }
+  .recipe-content-details{
+    margin-top: -3rem;
+  }
+
 }
 
 h3 {

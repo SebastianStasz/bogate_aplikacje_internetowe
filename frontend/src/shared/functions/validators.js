@@ -12,4 +12,10 @@ const isPositiveNumber = (value) => {
   };
 };
 
-export { isLengthValid, isPositiveNumber };
+const isNotEmptyArray = (arr, strLength) => {
+  return {
+    isValid: arr.length > 0 && !arr.some((el) => el.length < strLength),
+  };
+};
+
+export { isLengthValid, isPositiveNumber, isNotEmptyArray };

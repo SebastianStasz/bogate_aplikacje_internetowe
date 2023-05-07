@@ -6,7 +6,9 @@
       accept="image/*"
       clearable
       label="Zdjęcie przepisu"
+      :error-messages="isPhotoValid || !photoClicked ? '' : 'Dodaj zdjęcie'"
       @change="handleFileUpload"
+      @click:clear="formValues.photo = null"
     ></v-file-input>
 
     <v-combobox
@@ -37,7 +39,7 @@
     <FormTextInput
       :name="'description'"
       :label="'Opis przepisu'"
-      :placeholder="'Napisz coś'"
+      :placeholder="'Napisz coś o przepisie'"
       :validate="isLengthValid(formValues.description, 3)"
       :initialValue="formValues.description"
       @set-value="updateValue('description', $event)"
@@ -55,12 +57,19 @@
       @set-value="updateValue('preparation', $event)"
     ></list-input>
 
-    <main-button @click="sendForm" title="Dodaj przepis"></main-button>
+    <main-button
+      @click="sendForm"
+      title="Dodaj przepis"
+      :is-disabled="!isFormValid"
+    ></main-button>
+    <p v-if="!isFormValid" class="warning">
+      Upewnij się że wszystkie pola są wypełnione!
+    </p>
   </div>
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref, computed } from "vue";
 import ListInput from "../components/ListInput.vue";
 import FormTextInput from "../components/FormTextInput.vue";
 import MainButton from "../components/MainButton.vue";
@@ -68,6 +77,7 @@ import useState from "../shared/store/useState";
 import {
   isLengthValid,
   isPositiveNumber,
+  isNotEmptyArray,
 } from "../shared/functions/validators";
 import { postData } from "../shared/functions/postData";
 
@@ -77,6 +87,7 @@ const props = defineProps({
   allCategory: Array,
 });
 const { user } = useState();
+const photoClicked = ref(false);
 
 const formValues = reactive({
   description: props.initialData?.description ?? "",
@@ -89,14 +100,58 @@ const formValues = reactive({
 });
 
 const updateValue = (fieldName, emitValue) => {
-  formValues[fieldName] = emitValue;
+  if (Array.isArray(emitValue)) {
+    formValues[fieldName] = [];
+    formValues[fieldName].push(...emitValue);
+  } else formValues[fieldName] = emitValue;
 };
+
+const isPhotoValid = computed(() => {
+  return formValues.photo !== null && formValues.photo !== "";
+});
+
+const isCategoryValid = computed(() => {
+  return props.allCategory.includes(formValues.category);
+});
+
+const isPreparationTimeValid = computed(() => {
+  return isPositiveNumber(formValues.preparationTime).isValid;
+});
+
+const isNameValid = computed(() => {
+  return isLengthValid(formValues.recipeName, 3).isValid;
+});
+
+const isDescriptionValid = computed(() => {
+  return isLengthValid(formValues.description, 3).isValid;
+});
+
+const isIngredientsValid = computed(() => {
+  return isNotEmptyArray(formValues.ingredients, 3).isValid;
+});
+
+const isPreparationValid = computed(() => {
+  return isNotEmptyArray(formValues.preparation, 3).isValid;
+});
+
+const isFormValid = computed(() => {
+  return (
+    isPreparationTimeValid.value &&
+    isNameValid.value &&
+    isDescriptionValid.value &&
+    isIngredientsValid.value &&
+    isPreparationValid.value &&
+    isPhotoValid.value &&
+    isCategoryValid.value
+  );
+});
 
 const sendForm = () => {
   postData(formValues, { goTo: `/userRecipes/${user.value}` }, props.postUrl);
 };
 
 const handleFileUpload = async (event) => {
+  photoClicked.value = true;
   const file = event.target.files[0];
   const base64String = await compressAndConvertToBase64(file, 800, 600);
   console.log(base64String);
@@ -185,6 +240,12 @@ h2 {
 
 h3 {
   margin-top: 1rem;
+}
+
+.warning {
+  color: rgb(217, 27, 27);
+  margin-top: 0.4rem;
+  font-size: 13px;
 }
 
 @media (max-width: 768px) {

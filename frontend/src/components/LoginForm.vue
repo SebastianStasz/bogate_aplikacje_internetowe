@@ -43,7 +43,7 @@
 import { reactive, computed } from "vue";
 import { postData } from "../shared/functions/postData";
 
-const formData = reactive({ login: "Przemek", password: "pass123" });
+const formData = reactive({ login: "", password: "" });
 
 const isPasswordValid = computed(() => {
   return formData.password.trim().length > 5;
